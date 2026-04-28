@@ -2,59 +2,62 @@
 <html lang="ka">
 <head>
     <meta charset="UTF-8">
-    <title>StudyHub LMS - Future</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub LMS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="tsparticles"></div>
-    <div class="content-wrapper">
-        <nav>
-            <div class="logo">🚀 StudyHub</div>
-            <div id="nav-links">
-                <button onclick="showPage('home')">მთავარი</button>
-                <button onclick="showPage('admin-panel')" id="admin-link" style="display:none;">ადმინი</button>
-                <button onclick="showPage('auth')" id="login-nav-btn">შესვლა</button>
-                <button onclick="logout()" id="logout-nav-btn" style="display:none;">გამოსვლა</button>
-            </div>
-        </nav>
 
+    <nav>
+        <div class="logo">🚀 StudyHub</div>
+        <div class="nav-menu">
+            <button class="nav-btn" onclick="showPage('home')">მთავარი</button>
+            <button class="nav-btn" id="admin-link" style="display:none;" onclick="showPage('admin-panel')">ადმინი</button>
+            <button class="nav-btn auth-btn" id="login-nav-btn" onclick="showPage('auth')">შესვლა</button>
+            <button class="nav-btn logout-btn" id="logout-nav-btn" style="display:none;" onclick="logout()">გამოსვლა</button>
+        </div>
+    </nav>
+
+    <main class="content-wrapper">
         <section id="home" class="page">
-            <div class="hero"><h1>სასწავლო პლატფორმა</h1></div>
+            <div class="hero">
+                <h1>სასწავლო პლატფორმა</h1>
+            </div>
             <div class="course-grid" id="course-list"></div>
         </section>
 
         <section id="auth" class="page" style="display:none;">
-            <div class="auth-container glass">
-                <h2>შესვლა იმეილით</h2>
-                <div class="input-group">
-                    <input type="email" id="email" required>
-                    <label>ელ-ფოსტა</label>
-                </div>
-                <button class="primary-btn pulse" onclick="handleAuth()">შესვლა</button>
+            <div class="glass-card">
+                <h2>ავტორიზაცია</h2>
+                <input type="email" id="email" placeholder="შეიყვანეთ იმეილი">
+                <button class="action-btn" onclick="handleAuth()">შესვლა</button>
             </div>
         </section>
 
         <section id="admin-panel" class="page" style="display:none;">
-            <div class="admin-container glass">
-                <h2>ახალი კურსი</h2>
-                <input type="text" id="course-title" placeholder="სათაური">
-                <textarea id="course-desc" placeholder="აღწერა"></textarea>
-                <button class="primary-btn" onclick="createCourse()">დამატება</button>
+            <div class="glass-card">
+                <h2>კურსის დამატება</h2>
+                <input type="text" id="course-title" placeholder="კურსის სათაური">
+                <textarea id="course-desc" placeholder="კურსის აღწერა"></textarea>
+                <button class="action-btn" onclick="createCourse()">გამოქვეყნება</button>
             </div>
         </section>
 
         <section id="lesson-view" class="page" style="display:none;">
-            <div class="lesson-container glass">
+            <div class="glass-card full-width">
                 <h2 id="lesson-header">გაკვეთილი</h2>
-                <iframe id="video-player" width="100%" height="400" src="" frameborder="0" allowfullscreen></iframe>
-                <div class="assignment-section">
-                    <textarea id="assignment-content" placeholder="ჩააბარე დავალება (ბმული)..."></textarea>
-                    <button class="primary-btn" onclick="submitWork()">გაგზავნა</button>
+                <div class="video-container">
+                    <iframe id="video-player" src="" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <div class="assignment-box">
+                    <textarea id="assignment-content" placeholder="ჩაწერე დავალების პასუხი..."></textarea>
+                    <button class="action-btn" onclick="submitWork()">დავალების გაგზავნა</button>
                 </div>
             </div>
         </section>
-    </div>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script src="particles-config.js"></script>
