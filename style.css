@@ -1,44 +1,274 @@
 :root {
-    --primary: #6366f1;
-    --dark: #1e293b;
-    --light: #f8fafc;
-    --accent: #10b981;
+    --bg-dark: #0f172a;
+    --primary: #8b5cf6; /* Neon Purple */
+    --secondary: #22d3ee; /* Neon Cyan */
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --glass: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --neon-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+    --font-main: 'Inter', sans-serif;
+    --font-mono: 'Fira Code', monospace;
 }
 
-body { font-family: 'Inter', sans-serif; margin: 0; background: var(--light); color: var(--dark); }
-
-nav { 
-    background: white; padding: 1rem 5%; display: flex; 
-    justify-content: space-between; align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+body {
+    font-family: var(--font-main);
+    margin: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow-x: hidden;
 }
 
-.logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
-
-button { 
-    padding: 8px 16px; cursor: pointer; border-radius: 6px; 
-    border: none; transition: 0.3s; font-weight: 500;
+/* ანიმაციური ფონის სტილი */
+#tsparticles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
 }
 
-.primary-btn { background: var(--primary); color: white; width: 100%; padding: 12px; }
-
-.page { padding: 40px 5%; max-width: 1200px; margin: auto; }
-
-.course-grid { 
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
-    gap: 25px; margin-top: 30px;
+.content-wrapper {
+    position: relative;
+    z-index: 1;
 }
 
-.course-card { 
-    background: white; padding: 20px; border-radius: 12px; 
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+/* ნავიგაცია */
+nav {
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    position: sticky;
+    top: 0;
 }
 
-.auth-container, .admin-form { 
-    max-width: 400px; margin: 50px auto; background: white; 
-    padding: 30px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px;
+.logo {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -1px;
 }
 
-input, textarea { 
-    padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem;
+.logo .edition {
+    color: var(--primary);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    border: 1px solid var(--primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+/* ღილაკები */
+button {
+    font-family: var(--font-main);
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.nav-btn {
+    background: transparent;
+    color: var(--text-main);
+}
+
+.nav-btn:hover {
+    background: var(--glass);
+    border-color: var(--glass-border);
+}
+
+.auth-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.auth-btn:hover {
+    box-shadow: var(--neon-shadow);
+    transform: translateY(-2px);
+}
+
+.logout-btn {
+    background: transparent;
+    color: var(--text-muted);
+    border-color: var(--glass-border);
+}
+
+.primary-btn {
+    background: var(--primary);
+    color: white;
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.primary-btn:hover {
+    box-shadow: var(--neon-shadow);
+}
+
+/* გვერდების კონტენტი */
+.page {
+    padding: 60px 5%;
+    max-width: 1300px;
+    margin: auto;
+}
+
+/* Hero სექცია */
+.hero {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    font-weight: 900;
+    margin: 0;
+    background: linear-gradient(to right, #fff, var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    margin-top: 10px;
+}
+
+/* "Glassmorphism" კონტეინერები */
+.glass {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* კურსების ბადე */
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.course-card {
+    background: var(--glass);
+    backdrop-filter: blur(5px);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.course-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.course-card h3 {
+    font-size: 1.4rem;
+    margin: 0 0 10px 0;
+    color: var(--text-main);
+}
+
+.course-card p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+/* ფორმების სტილი (Interactive Inputs) */
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-group input, .input-group textarea {
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 1rem;
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+
+.input-group textarea {
+    height: 120px;
+    resize: none;
+}
+
+.input-group label {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: 0.3s;
+}
+
+.input-group textarea ~ label {
+    top: 20px;
+    transform: none;
+}
+
+.input-group input:focus, .input-group textarea:focus,
+.input-group input:valid, .input-group textarea:valid {
+    border-color: var(--primary);
+    outline: none;
+}
+
+.input-group input:focus ~ label, .input-group input:valid ~ label,
+.input-group textarea:focus ~ label, .input-group textarea:valid ~ label {
+    top: -10px;
+    left: 10px;
+    font-size: 0.8rem;
+    color: var(--primary);
+    background: var(--bg-dark);
+    padding: 0 5px;
+}
+
+/* კონტეინერების ზომები */
+.auth-container, .admin-container {
+    max-width: 450px;
+    margin: 60px auto;
+    padding: 40px;
+}
+
+.auth-toggle {
+    text-align: center;
+    color: var(--primary);
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+}
+
+.auth-toggle:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+/* ანიმაციები */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
 }
