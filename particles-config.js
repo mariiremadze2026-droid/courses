@@ -76,4 +76,12 @@ tsParticles.load("tsparticles", {
         }
     },
     retina_detect: true
+}); 
+tsParticles.load("tsparticles", {
+    particles: {
+        number: { value: 60 },
+        color: { value: "#8b5cf6" },
+        links: { enable: true, color: "#8b5cf6", opacity: 0.2 },
+        move: { enable: true, speed: 1.5 }
+    }
 });
