@@ -47,5 +47,81 @@
 
     <script src="api.js"></script>
     <script src="script.js"></script>
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub LMS - Futurist Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="tsparticles"></div>
+
+    <div class="content-wrapper">
+        <nav>
+            <div class="logo">
+                <span class="icon">🚀</span> StudyHub <span class="edition">LMS</span>
+            </div>
+            <div id="nav-links">
+                <button class="nav-btn" onclick="showPage('home')">მთავარი</button>
+                <button class="nav-btn admin-btn" onclick="showPage('admin-panel')" id="admin-link" style="display:none;">ადმინ პანელი</button>
+                <button class="nav-btn auth-btn" onclick="showPage('auth')" id="login-nav-btn">შესვლა</button>
+                <button class="nav-btn logout-btn" onclick="logout()" id="logout-nav-btn" style="display:none;">გამოსვლა</button>
+            </div>
+        </nav>
+
+        <main>
+            <section id="home" class="page">
+                <div class="hero">
+                    <h1 class="glitch" data-text="აღმოაჩინე მომავალი">აღმოაჩინე მომავალი</h1>
+                    <p>ისწავლე უახლესი ტექნოლოგიები და პროგრამირება</p>
+                </div>
+                <div class="course-grid" id="course-list">
+                    </div>
+            </section>
+
+            <section id="auth" class="page" style="display:none;">
+                <div class="auth-container glass">
+                    <h2 id="auth-title">შესვლა</h2>
+                    <div class="input-group">
+                        <input type="email" id="email" required>
+                        <label>ელ-ფოსტა</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" required>
+                        <label>პაროლი</label>
+                    </div>
+                    <button class="primary-btn pulse" onclick="handleAuth()">დადასტურება</button>
+                    <p class="auth-toggle" onclick="toggleAuthMode()">არ გაქვს ანგარიში? დარეგისტრირდი</p>
+                </div>
+            </section>
+
+            <section id="admin-panel" class="page" style="display:none;">
+                <div class="admin-container glass">
+                    <h2>ახალი კურსის დამატება</h2>
+                    <div class="admin-form">
+                        <div class="input-group">
+                            <input type="text" id="course-title" required>
+                            <label>კურსის სახელი</label>
+                        </div>
+                        <div class="input-group">
+                            <textarea id="course-desc" required></textarea>
+                            <label>კურსის აღწერა</label>
+                        </div>
+                        <button class="primary-btn" onclick="createCourse()">კურსის გამოქვეყნება</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="particles-config.js"></script>
+    
+    <script src="api.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
