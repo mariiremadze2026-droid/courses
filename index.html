@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub LMS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+        <div class="logo">🚀 StudyHub LMS</div>
+        <div id="nav-links">
+            <button onclick="showPage('home')">მთავარი</button>
+            <button onclick="showPage('admin-panel')" id="admin-link" style="display:none;">ადმინ პანელი</button>
+            <button onclick="showPage('auth')" id="login-nav-btn">შესვლა</button>
+            <button onclick="logout()" id="logout-nav-btn" style="display:none;">გამოსვლა</button>
+        </div>
+    </nav>
+
+    <section id="home" class="page">
+        <div class="hero">
+            <h1>აღმოაჩინე ახალი კურსები</h1>
+            <p>ისწავლე პროგრამირება და ტექნოლოგიები წამყვან ინსტრუქტორებთან</p>
+        </div>
+        <div class="course-grid" id="course-list"></div>
+    </section>
+
+    <section id="auth" class="page" style="display:none;">
+        <div class="auth-container">
+            <h2 id="auth-title">შესვლა</h2>
+            <input type="email" id="email" placeholder="ელ-ფოსტა">
+            <input type="password" id="password" placeholder="პაროლი">
+            <button class="primary-btn" onclick="handleAuth()">დადასტურება</button>
+            <p onclick="toggleAuthMode()" style="cursor:pointer; color: var(--primary);">არ გაქვს ანგარიში? დარეგისტრირდი</p>
+        </div>
+    </section>
+
+    <section id="admin-panel" class="page" style="display:none;">
+        <h2>ახალი კურსის დამატება</h2>
+        <div class="admin-form">
+            <input type="text" id="course-title" placeholder="კურსის სახელი">
+            <textarea id="course-desc" placeholder="კურსის აღწერა"></textarea>
+            <button class="primary-btn" onclick="createCourse()">კურსის გამოქვეყნება</button>
+        </div>
+    </section>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
