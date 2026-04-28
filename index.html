@@ -2,79 +2,63 @@
 <html lang="ka">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyHub LMS - ფუტურისტული გამოცემა</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>StudyHub LMS - Future</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div id="tsparticles"></div>
-
     <div class="content-wrapper">
         <nav>
-            <div class="logo">
-                <span class="icon">🚀</span> StudyHub <span class="edition">LMS</span>
-            </div>
+            <div class="logo">🚀 StudyHub</div>
             <div id="nav-links">
-                <button class="nav-btn" onclick="showPage('home')">მთავარი</button>
-                <button class="nav-btn admin-btn" onclick="showPage('admin-panel')" id="admin-link" style="display:none;">ადმინ პანელი</button>
-                <button class="nav-btn auth-btn" onclick="showPage('auth')" id="login-nav-btn">შესვლა</button>
-                <button class="nav-btn logout-btn" onclick="logout()" id="logout-nav-btn" style="display:none;">გამოსვლა</button>
+                <button onclick="showPage('home')">მთავარი</button>
+                <button onclick="showPage('admin-panel')" id="admin-link" style="display:none;">ადმინი</button>
+                <button onclick="showPage('auth')" id="login-nav-btn">შესვლა</button>
+                <button onclick="logout()" id="logout-nav-btn" style="display:none;">გამოსვლა</button>
             </div>
         </nav>
 
-        <main>
-            <section id="home" class="page">
-                <div class="hero">
-                    <h1 class="glitch">აღმოაჩინე მომავალი</h1>
-                    <p>ისწავლე უახლესი ტექნოლოგიები და პროგრამირება ჩვენთან ერთად</p>
-                </div>
-                <div class="course-grid" id="course-list">
-                    </div>
-            </section>
+        <section id="home" class="page">
+            <div class="hero"><h1>სასწავლო პლატფორმა</h1></div>
+            <div class="course-grid" id="course-list"></div>
+        </section>
 
-            <section id="auth" class="page" style="display:none;">
-                <div class="auth-container glass">
-                    <h2 id="auth-title">შესვლა</h2>
-                    <div class="input-group">
-                        <input type="email" id="email" required>
-                        <label>ელ-ფოსტა</label>
-                    </div>
-                    <div class="input-group">
-                        <input type="password" id="password" required>
-                        <label>პაროლი</label>
-                    </div>
-                    <button class="primary-btn pulse" onclick="handleAuth()">დადასტურება</button>
-                    <p class="auth-toggle" onclick="toggleAuthMode()">არ გაქვს ანგარიში? დარეგისტრირდი</p>
+        <section id="auth" class="page" style="display:none;">
+            <div class="auth-container glass">
+                <h2>შესვლა იმეილით</h2>
+                <div class="input-group">
+                    <input type="email" id="email" required>
+                    <label>ელ-ფოსტა</label>
                 </div>
-            </section>
+                <button class="primary-btn pulse" onclick="handleAuth()">შესვლა</button>
+            </div>
+        </section>
 
-            <section id="admin-panel" class="page" style="display:none;">
-                <div class="admin-container glass">
-                    <h2>ახალი კურსის დამატება</h2>
-                    <div class="admin-form">
-                        <div class="input-group">
-                            <input type="text" id="course-title" required>
-                            <label>კურსის სახელი</label>
-                        </div>
-                        <div class="input-group">
-                            <textarea id="course-desc" required></textarea>
-                            <label>კურსის აღწერა</label>
-                        </div>
-                        <button class="primary-btn" onclick="createCourse()">კურსის გამოქვეყნება</button>
-                    </div>
+        <section id="admin-panel" class="page" style="display:none;">
+            <div class="admin-container glass">
+                <h2>ახალი კურსი</h2>
+                <input type="text" id="course-title" placeholder="სათაური">
+                <textarea id="course-desc" placeholder="აღწერა"></textarea>
+                <button class="primary-btn" onclick="createCourse()">დამატება</button>
+            </div>
+        </section>
+
+        <section id="lesson-view" class="page" style="display:none;">
+            <div class="lesson-container glass">
+                <h2 id="lesson-header">გაკვეთილი</h2>
+                <iframe id="video-player" width="100%" height="400" src="" frameborder="0" allowfullscreen></iframe>
+                <div class="assignment-section">
+                    <textarea id="assignment-content" placeholder="ჩააბარე დავალება (ბმული)..."></textarea>
+                    <button class="primary-btn" onclick="submitWork()">გაგზავნა</button>
                 </div>
-            </section>
-        </main>
+            </div>
+        </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
-    
     <script src="particles-config.js"></script>
-    
     <script src="api.js"></script>
     <script src="script.js"></script>
-    
 </body>
 </html>
