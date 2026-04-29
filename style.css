@@ -1,110 +1,23 @@
-:root {
-    --primary: #8b5cf6;
-    --text: #ffffff;
-    --bg: #0f172a;
-}
-
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    font-size: 18px; /* ნაწერების საბაზისო ზომა გაიზარდა */
-}
-
+:root { --primary: #8b5cf6; --bg: #0f172a; --text: #ffffff; }
+body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 18px; overflow-x: hidden; }
 #tsparticles { position: fixed; z-index: -1; width: 100%; height: 100%; }
 
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 5%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(10px);
-}
+nav { display: flex; justify-content: space-between; padding: 20px 5%; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); sticky: top; }
+.logo { font-size: 30px; font-weight: 900; color: var(--primary); }
 
-.logo { font-size: 28px; font-weight: 800; }
+.page { max-width: 1200px; margin: auto; padding: 40px 20px; }
+.glass-card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); }
 
-.nav-btn {
-    background: transparent;
-    color: white;
-    border: none;
-    font-size: 18px;
-    margin-left: 15px;
-    cursor: pointer;
-    padding: 10px 15px;
-}
+.search-box { display: flex; gap: 15px; margin-bottom: 30px; padding: 20px; border-radius: 15px; }
+input, select, textarea { width: 100%; padding: 15px; font-size: 18px; border-radius: 10px; border: 1px solid #444; background: rgba(0,0,0,0.5); color: white; }
 
-/* ბარათები და ფორმები */
-.glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 40px;
-    border-radius: 20px;
-    max-width: 500px;
-    margin: 40px auto;
-    backdrop-filter: blur(15px);
-}
+.course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+.course-card { background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px; border: 1px solid var(--primary); transition: 0.3s; }
+.course-card:hover { transform: translateY(-5px); box-shadow: 0 0 20px var(--primary); }
 
-.full-width { max-width: 1000px; }
+.action-btn { background: var(--primary); color: white; border: none; padding: 18px; font-size: 20px; font-weight: bold; border-radius: 10px; cursor: pointer; width: 100%; }
 
-h1 { font-size: 48px; text-align: center; }
-h2 { font-size: 32px; margin-bottom: 20px; }
-
-input, textarea {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    border: 1px solid #444;
-    background: rgba(0,0,0,0.3);
-    color: white;
-    box-sizing: border-box;
-}
-
-.action-btn {
-    width: 100%;
-    padding: 18px;
-    font-size: 20px;
-    font-weight: bold;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.action-btn:hover { opacity: 0.8; transform: scale(1.02); }
-
-/* კურსების სია */
-.course-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
-    padding: 20px;
-}
-
-.course-card {
-    background: rgba(255,255,255,0.03);
-    padding: 30px;
-    border-radius: 15px;
-    border: 1px solid var(--primary);
-}
-
-.course-card h3 { font-size: 24px; }
-.course-card p { font-size: 18px; color: #ccc; }
-
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    overflow: hidden;
-    border-radius: 15px;
-}
-
-.video-container iframe {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-}
+/* წიგნის სტილი */
+.book-viewport { display: flex; justify-content: center; padding: 40px 0; }
+.page-content { background: #fdf6e3; color: #2c3e50; padding: 40px; border: 1px solid #dcd6bc; font-family: 'Georgia', serif; font-size: 20px; line-height: 1.6; }
+.page-num { position: absolute; bottom: 15px; width: 100%; text-align: center; color: #888; font-size: 14px; }
