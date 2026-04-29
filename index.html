@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyHub LMS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>StudyHub LMS & Library</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,7 +13,8 @@
     <nav>
         <div class="logo">🚀 StudyHub</div>
         <div class="nav-menu">
-            <button class="nav-btn" onclick="showPage('home')">მთავარი</button>
+            <button class="nav-btn" onclick="showPage('home')">კურსები</button>
+            <button class="nav-btn" onclick="showPage('library')">ბიბლიოთეკა</button>
             <button class="nav-btn" id="admin-link" style="display:none;" onclick="showPage('admin-panel')">ადმინი</button>
             <button class="nav-btn auth-btn" id="login-nav-btn" onclick="showPage('auth')">შესვლა</button>
             <button class="nav-btn logout-btn" id="logout-nav-btn" style="display:none;" onclick="logout()">გამოსვლა</button>
@@ -22,44 +23,52 @@
 
     <main class="content-wrapper">
         <section id="home" class="page">
-            <div class="hero">
-                <h1>სასწავლო პლატფორმა</h1>
+            <div class="hero"><h1>ონლაინ აკადემია</h1></div>
+            <div class="search-box glass">
+                <input type="text" id="course-search" placeholder="მოძებნე კურსი..." onkeyup="filterCourses()">
             </div>
             <div class="course-grid" id="course-list"></div>
         </section>
 
+        <section id="library" class="page" style="display:none;">
+            <div class="hero"><h1>ციფრული ბიბლიოთეკა</h1></div>
+            <div class="search-box glass">
+                <input type="text" id="lib-search" placeholder="წიგნი ან ავტორი..." onkeyup="filterLibrary()">
+                <select id="subject-filter" onchange="filterLibrary()">
+                    <option value="all">ყველა საგანი</option>
+                    <option value="ქართული">ქართული</option>
+                    <option value="ისტორია">ისტორია</option>
+                </select>
+            </div>
+            <div class="course-grid" id="library-list"></div>
+        </section>
+
+        <section id="book-reader" class="page" style="display:none;">
+            <div class="reader-header glass">
+                <button class="nav-btn" onclick="showPage('library')">← უკან</button>
+                <h2 id="current-book-title">გადაფურცლეთ მაუსით</h2>
+            </div>
+            <div class="book-viewport">
+                <div id="book-canvas"></div>
+            </div>
+            <div id="book-quiz" class="glass-card" style="display:none;">
+                <h3>📝 შეამოწმე ცოდნა</h3>
+                <div id="book-quiz-container"></div>
+                <button class="action-btn" onclick="checkBookQuiz()">შედეგის ნახვა</button>
+            </div>
+        </section>
+
         <section id="auth" class="page" style="display:none;">
             <div class="glass-card">
-                <h2>ავტორიზაცია</h2>
-                <input type="email" id="email" placeholder="შეიყვანეთ იმეილი">
+                <h2>შესვლა იმეილით</h2>
+                <input type="email" id="email" placeholder="example@gmail.com">
                 <button class="action-btn" onclick="handleAuth()">შესვლა</button>
-            </div>
-        </section>
-
-        <section id="admin-panel" class="page" style="display:none;">
-            <div class="glass-card">
-                <h2>კურსის დამატება</h2>
-                <input type="text" id="course-title" placeholder="კურსის სათაური">
-                <textarea id="course-desc" placeholder="კურსის აღწერა"></textarea>
-                <button class="action-btn" onclick="createCourse()">გამოქვეყნება</button>
-            </div>
-        </section>
-
-        <section id="lesson-view" class="page" style="display:none;">
-            <div class="glass-card full-width">
-                <h2 id="lesson-header">გაკვეთილი</h2>
-                <div class="video-container">
-                    <iframe id="video-player" src="" frameborder="0" allowfullscreen></iframe>
-                </div>
-                <div class="assignment-box">
-                    <textarea id="assignment-content" placeholder="ჩაწერე დავალების პასუხი..."></textarea>
-                    <button class="action-btn" onclick="submitWork()">დავალების გაგზავნა</button>
-                </div>
             </div>
         </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
     <script src="particles-config.js"></script>
     <script src="api.js"></script>
     <script src="script.js"></script>
