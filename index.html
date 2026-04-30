@@ -3,401 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS.ge — Deep Space Academy</title>
+  <title>Deep Space Academy - LMS</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body { margin-top: 64px; }
-
-    /* ---- HERO ---- */
     .hero {
-      padding: 6rem 2rem 5rem;
+      height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       position: relative;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(0,212,255,0.08);
-      border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 100px;
-      padding: 6px 18px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--cyan);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
-      animation: fadeUp 0.5s both;
-    }
-    .hero-badge::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 6px var(--cyan);
-      animation: pulse-glow 2s infinite;
-    }
-    @keyframes pulse-glow {
-      0%,100%{opacity:1} 50%{opacity:0.4}
-    }
-
-    .hero-title {
-      font-size: clamp(2.5rem, 7vw, 5rem);
-      font-weight: 900;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
-      animation: fadeUp 0.55s 0.08s both;
-    }
-    .hero-title .line2 { display: block; }
-
-    .hero-sub {
-      font-size: 1.1rem;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
-      font-weight: 300;
-      animation: fadeUp 0.55s 0.16s both;
-    }
-
-    .hero-cta {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 4rem;
-      animation: fadeUp 0.55s 0.24s both;
-    }
-
-    /* Stats row */
-    .hero-stats {
-      display: flex;
-      justify-content: center;
-      gap: 0;
-      animation: fadeUp 0.55s 0.32s both;
-      background: rgba(17,21,32,0.5);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 0;
-      backdrop-filter: blur(12px);
-      max-width: 600px;
-      margin: 0 auto;
       overflow: hidden;
     }
-    .hero-stat {
-      flex: 1;
-      padding: 1.5rem;
-      text-align: center;
-      position: relative;
+    .hero h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 30px rgba(100, 150, 255, 0.8);
     }
-    .hero-stat + .hero-stat::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 20%; bottom: 20%;
-      width: 1px;
-      background: var(--border);
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 25px;
+      padding: 40px 0;
     }
-    .hero-stat-num {
-      font-size: 2rem;
-      font-weight: 900;
-      color: var(--text);
-      letter-spacing: -0.02em;
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .hero-stat-num.c-cyan   { color: var(--cyan); }
-    .hero-stat-num.c-violet { color: #a58eff; }
-    .hero-stat-num.c-green  { color: var(--green); }
-    .hero-stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-
-    /* ---- FILTER BAR ---- */
-    .section-label {
-      text-align: center;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 1.5rem;
-    }
-    .filter-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 0 2rem 2rem;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 7px 18px;
-      border-radius: 100px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid var(--border2);
-      background: transparent;
-      color: var(--muted);
-      transition: all 0.2s;
-      font-family: var(--font-body);
-    }
-    .filter-btn:hover { color: var(--text); border-color: var(--border3); background: rgba(255,255,255,0.04); }
-    .filter-btn.active {
-      background: var(--cyan-dim);
-      border-color: rgba(0,212,255,0.3);
-      color: var(--cyan);
-      box-shadow: 0 0 16px rgba(0,212,255,0.1);
-    }
-    .search-wrap {
-      background: rgba(17,21,32,0.7);
-      border: 1px solid var(--border2);
-      border-radius: 100px;
-      padding: 7px 16px 7px 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      backdrop-filter: blur(8px);
-      transition: border-color 0.2s;
-    }
-    .search-wrap:focus-within { border-color: rgba(0,212,255,0.4); }
-    .search-wrap input {
-      background: none;
-      border: none;
-      outline: none;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 13px;
-      width: 180px;
-    }
-    .search-wrap input::placeholder { color: var(--subtle); }
-    .search-icon { color: var(--muted); font-size: 13px; }
-
-    /* ---- CATALOG ---- */
-    .catalog { padding: 0 2rem 3rem; }
-    .catalog-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-    .catalog-count { font-size: 13px; color: var(--muted); }
-
-    /* ---- COURSE CARD ---- */
     .course-card {
-      display: block;
-      text-decoration: none;
-      background: rgba(17,21,32,0.65);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      backdrop-filter: blur(12px);
-      transition: all 0.3s cubic-bezier(.4,0,.2,1);
-      position: relative;
+      transition: 0.4s;
     }
-    .course-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: var(--radius-lg);
-      background: linear-gradient(135deg, rgba(0,212,255,0.04) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s;
+    .course-card:hover {
+      transform: translateY(-15px);
     }
-    .course-card:hover { border-color: rgba(0,212,255,0.25); transform: translateY(-5px); box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 40px rgba(0,212,255,0.07); }
-    .course-card:hover::before { opacity: 1; }
-
-    .course-thumb {
-      height: 140px;
-      background: linear-gradient(135deg, var(--bg3), var(--surface));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .course-thumb::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(17,21,32,0.8));
-    }
-    .course-thumb-badge { position: absolute; top: 12px; right: 12px; z-index: 1; }
-
-    .course-body { padding: 1.1rem; }
-    .course-category {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--cyan);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 6px;
-    }
-    .course-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.35;
-      margin-bottom: 8px;
-      letter-spacing: -0.01em;
-    }
-    .course-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.55;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-bottom: 1rem;
-      font-weight: 300;
-    }
-    .course-meta { display: flex; gap: 14px; font-size: 12px; color: var(--muted); }
-    .course-footer {
-      padding: 0.85rem 1.1rem;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .course-students { font-size: 12px; color: var(--muted); }
-
-    /* ---- EMPTY ---- */
-    .empty-state { text-align: center; padding: 4rem 2rem; grid-column: 1/-1; }
-    .empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.5; }
-    .empty-state h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-    .empty-state p { font-size: 14px; color: var(--muted); }
   </style>
 </head>
 <body>
-  <div class="page-wrap">
-    <nav class="navbar" id="navbar"></nav>
-
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-badge">✦ 2024 — ახალი სეზონი დაიწყო</div>
-      <h1 class="hero-title">
-        <span class="grad-text">ისწავლე.</span>
-        <span class="line2">გაიზარდე. შექმენი.</span>
-      </h1>
-      <p class="hero-sub">პრაქტიკული კურსები პროგრამირებაში, დიზაინსა და ტექნოლოგიებში — ქართულ ენაზე, პროფესიონალური დონეზე.</p>
-      <div class="hero-cta">
-        <a href="#catalog" class="btn btn-primary btn-xl">კურსების ნახვა →</a>
-        <a href="auth.html?tab=register" class="btn btn-ghost btn-lg">უფასო რეგისტრაცია</a>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-num c-cyan" id="stat-courses">0</div>
-          <div class="hero-stat-label">კურსი</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num c-violet" id="stat-students">0</div>
-          <div class="hero-stat-label">სტუდენტი</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num c-green" id="stat-hours">0</div>
-          <div class="hero-stat-label">სასწავლო საათი</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FILTER -->
-    <div id="catalog" style="padding-top:3rem">
-      <div class="section-label">კურსების კატალოგი</div>
-      <div class="filter-bar">
-        <button class="filter-btn active" onclick="setFilter('all',this)">ყველა</button>
-        <button class="filter-btn" onclick="setFilter('frontend',this)">Frontend</button>
-        <button class="filter-btn" onclick="setFilter('backend',this)">Backend</button>
-        <button class="filter-btn" onclick="setFilter('data',this)">Data Science</button>
-        <button class="filter-btn" onclick="setFilter('design',this)">Design</button>
-        <div class="search-wrap">
-          <span class="search-icon">⌕</span>
-          <input type="text" id="search-input" placeholder="კურსის ძებნა..." oninput="renderCatalog()">
-        </div>
+  <nav>
+    <div style="max-width: 1400px; margin: 0 auto; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;">
+      <h2 onclick="window.location.href='index.html'" style="cursor:pointer; color:#64b5ff;">🌌 Deep Space Academy</h2>
+      <div style="display:flex; gap:25px; font-size:1.1rem;">
+        <a href="index.html" style="color:#64b5ff; font-weight:bold;">მთავარი</a>
+        <a href="books.html">წიგნები</a>
+        <a href="history.html">ლიტერატურის ისტორია</a>
+        <a href="dashboard.html">სტუდენტის დაფა</a>
+        <a href="admin.html">ადმინ პანელი</a>
+        <a href="auth.html" onclick="logout()">გამოსვლა</a>
       </div>
     </div>
+  </nav>
 
-    <!-- CATALOG -->
-    <div class="catalog">
-      <div class="catalog-meta">
-        <span class="catalog-count" id="catalog-count"></span>
-      </div>
-      <div class="grid-auto" id="course-grid"></div>
+  <!-- Hero Section -->
+  <div class="hero glass" style="margin: 40px; border-radius: 24px;">
+    <div>
+      <h1>მოგესალმებით Deep Space Academy-ში</h1>
+      <p style="font-size:1.5rem; margin:20px 0;">შეისწავლე, განვითარდი და აღმოაჩინე სამყარო ქართული ლიტერატურისა და თანამედროვე ცოდნის საშუალებით</p>
+      <button onclick="window.location.href='books.html'" class="btn-neon" style="font-size:1.3rem; padding:16px 40px;">
+        დაიწყე სწავლა
+      </button>
+    </div>
+  </div>
+
+  <div style="max-width: 1400px; margin: 0 auto; padding: 0 40px 80px;">
+    <h2 style="text-align:center; margin:60px 0 40px; font-size:2.5rem;">ხელმისაწვდომი კურსები</h2>
+    
+    <div class="course-grid" id="coursesContainer">
+      <!-- კურსები JavaScript-ით დაემატება -->
     </div>
   </div>
 
   <script src="js/app.js"></script>
   <script>
-    renderNavbar({ activePage:'home' });
-    let activeFilter = 'all';
+    const sampleCourses = [
+      { id: 1, title: "ქართული ლიტერატურის ისტორია", desc: "შოთა რუსთაველიდან თანამედროვე მწერლებამდე", instructor: "დოქტორი ანა ქევხიშვილი" },
+      { id: 2, title: "ვეფხისტყაოსანი - სიღრმისეული ანალიზი", desc: "რუსთაველის შედევრის ფილოსოფიური და ლიტერატურული ანალიზი", instructor: "პროფ. გიორგი მაისურაძე" },
+      { id: 3, title: "თანამედროვე ქართული პროზა", desc: "XXI საუკუნის ქართული ლიტერატურა", instructor: "მწერალი დათო ტურაშვილი" },
+      { id: 4, title: "შემოქმედებითი წერა", desc: "როგორ დავწეროთ კარგი მოთხრობა და რომანი", instructor: "ეკა ქევხიშვილი" }
+    ];
 
-    function animateCount(id, target, suffix='') {
-      const el = document.getElementById(id);
-      let cur = 0, step = Math.ceil(target/50);
-      const t = setInterval(() => {
-        cur = Math.min(cur+step, target);
-        el.textContent = cur.toLocaleString() + suffix;
-        if (cur>=target) clearInterval(t);
-      }, 25);
-    }
-    function initStats() {
-      const c = Courses.all();
-      animateCount('stat-courses', c.length);
-      animateCount('stat-students', c.reduce((s,x)=>s+x.enrolled,0));
-      animateCount('stat-hours', c.reduce((s,x)=>s+parseInt(x.duration),0));
-    }
+    function renderCourses() {
+      const container = document.getElementById('coursesContainer');
+      container.innerHTML = '';
 
-    const catColors = { frontend:'cyan', backend:'violet', data:'green', design:'amber' };
-    const catLabels = { frontend:'Frontend', backend:'Backend', data:'Data Science', design:'Design' };
-
-    function setFilter(cat, btn) {
-      activeFilter = cat;
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      renderCatalog();
+      sampleCourses.forEach(course => {
+        const card = `
+          <div class="course-card glass" style="padding:25px; height:100%;">
+            <h3 style="margin-bottom:15px;">${course.title}</h3>
+            <p style="margin-bottom:20px; color:#ccc;">${course.desc}</p>
+            <p><strong>ინსტრუქტორი:</strong> ${course.instructor}</p>
+            <button onclick="alert('კურსი "${course.title}" დაემატა თქვენს დაფაზე!')" class="btn-neon" style="margin-top:20px; width:100%;">
+              დარეგისტრირდი კურსზე
+            </button>
+          </div>`;
+        container.innerHTML += card;
+      });
     }
 
-    function renderCatalog() {
-      const q = document.getElementById('search-input').value.toLowerCase();
-      let courses = Courses.all();
-      if (activeFilter!=='all') courses = courses.filter(c=>c.category===activeFilter);
-      if (q) courses = courses.filter(c=>c.title.toLowerCase().includes(q)||c.description.toLowerCase().includes(q));
-
-      const user = Auth.getUser();
-      const grid = document.getElementById('course-grid');
-      document.getElementById('catalog-count').textContent = `${courses.length} კურსი ნაპოვნია`;
-
-      if (!courses.length) {
-        grid.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><h3>კურსი ვერ მოიძებნა</h3><p>სცადეთ სხვა ძებნის სიტყვა ან კატეგორია</p></div>`;
-        return;
-      }
-      grid.innerHTML = courses.map((c,i) => {
-        const enrolled = user && Courses.isEnrolled(user.id, c.id);
-        const col = catColors[c.category] || 'muted';
-        return `
-        <a href="lesson.html?course=${c.id}" class="course-card fade-up" style="animation-delay:${i*0.06}s">
-          <div class="course-thumb">
-            ${c.thumbnail}
-            <div class="course-thumb-badge"><span class="badge badge-muted">${c.level}</span></div>
-          </div>
-          <div class="course-body">
-            <div class="course-category">${catLabels[c.category]||c.category}</div>
-            <div class="course-title">${c.title}</div>
-            <div class="course-desc">${c.description}</div>
-            <div class="course-meta">
-              <span>📚 ${c.lessons} გაკვეთილი</span>
-              <span>⏱ ${c.duration}</span>
-            </div>
-          </div>
-          <div class="course-footer">
-            <span class="course-students">👤 ${c.enrolled} სტუდენტი</span>
-            ${enrolled
-              ? '<span class="badge badge-green">✓ დარეგ.</span>'
-              : `<span class="badge badge-${col}">გახსნა →</span>`
-            }
-          </div>
-        </a>`;
-      }).join('');
-    }
-
-    initStats();
-    renderCatalog();
+    window.onload = () => {
+      renderCourses();
+    };
   </script>
 </body>
 </html>
