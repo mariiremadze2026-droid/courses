@@ -3,223 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS.ge — Dashboard</title>
+  <title>სტუდენტის დაფა | Deep Space Academy</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body { margin-top:64px; }
-
-    .dash-hero {
-      padding: 2.5rem 2rem;
-      border-bottom: 1px solid var(--border);
+    .progress-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: conic-gradient(#64b5ff 0% 65%, #333 65% 100%);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      background: linear-gradient(135deg, rgba(0,212,255,0.04) 0%, rgba(124,92,252,0.06) 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    .dash-hero::after {
-      content: '◈';
-      position: absolute;
-      right: -2rem; bottom: -3rem;
-      font-size: 14rem;
-      color: rgba(0,212,255,0.025);
-      line-height: 1;
-      pointer-events: none;
-    }
-    .dash-greeting h2 {
-      font-size: 1.75rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-    .dash-greeting p { color: var(--muted); font-size: 14px; font-weight: 300; }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4,1fr);
-      gap: 1rem;
-      padding: 1.75rem 2rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .body-content { padding: 2rem; }
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-    }
-    .section-head h3 { font-size: 1rem; font-weight: 700; letter-spacing: -0.01em; }
-
-    /* COURSE ROW */
-    .course-row {
-      display: grid;
-      grid-template-columns: 64px 1fr auto;
-      gap: 1rem;
-      align-items: center;
-      background: rgba(17,21,32,0.6);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.1rem 1.25rem;
-      margin-bottom: 0.65rem;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-    .course-row:hover { border-color: rgba(0,212,255,0.2); transform: translateX(4px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-    .row-thumb {
-      width: 64px; height: 64px;
-      background: linear-gradient(135deg, var(--bg3), var(--surface));
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
+      justify-content: center;
       font-size: 1.8rem;
+      font-weight: bold;
     }
-    .row-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; color: var(--text); letter-spacing: -0.01em; }
-    .row-meta { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
-    .row-right { text-align: right; min-width: 110px; }
-    .row-pct { font-size: 1.4rem; font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 6px; }
-
-    .empty-courses {
+    .stat-card {
+      padding: 25px;
       text-align: center;
-      padding: 3rem;
-      background: rgba(0,212,255,0.03);
-      border: 1px dashed rgba(0,212,255,0.15);
-      border-radius: var(--radius-lg);
     }
-    .empty-courses .icon { font-size: 2.5rem; margin-bottom: 1rem; }
-    .empty-courses h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .empty-courses p { font-size: 13px; color: var(--muted); margin-bottom: 1.25rem; }
-
-    .grade-val { font-size: 1rem; font-weight: 800; }
-    .grade-val.hi  { color: var(--green); }
-    .grade-val.mid { color: var(--amber); }
-    .grade-val.lo  { color: var(--red); }
-
-    .activity-item { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
-    .activity-item:last-child { border-bottom:none; }
-    .a-dot { width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);margin-top:5px;flex-shrink:0; }
-    .a-text { font-size:14px;color:var(--text2); }
-    .a-time { font-size:12px;color:var(--muted);margin-top:2px; }
-
-    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
-    @media(max-width:900px) { .stats-grid{grid-template-columns:repeat(2,1fr);} .two-col{grid-template-columns:1fr;} }
   </style>
 </head>
 <body>
-  <div class="page-wrap">
-    <nav class="navbar" id="navbar"></nav>
-    <div id="app"></div>
+  <nav>
+    <div style="max-width: 1400px; margin: 0 auto; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;">
+      <h2 onclick="window.location.href='index.html'" style="cursor:pointer; color:#64b5ff;">🌌 Deep Space Academy</h2>
+      <div style="display:flex; gap:25px; font-size:1.1rem;">
+        <a href="index.html">მთავარი</a>
+        <a href="books.html">წიგნები</a>
+        <a href="history.html">ლიტერატურის ისტორია</a>
+        <a href="dashboard.html" style="color:#64b5ff; font-weight:bold;">ჩემი დაფა</a>
+        <a href="assignments.html">დავალებები</a>
+        <a href="#" onclick="logout()">გამოსვლა</a>
+      </div>
+    </div>
+  </nav>
+
+  <div style="max-width: 1400px; margin: 0 auto; padding: 40px;">
+    <h1 style="margin-bottom: 10px;">გამარჯობა, <span id="username" style="color:#64b5ff;">სტუდენტო</span>!</h1>
+    <p style="color:#aaa; margin-bottom:40px;">აქ შეგიძლია ნახო შენი პროგრესი და არჩეული კურსები</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px;">
+      <div class="glass stat-card">
+        <div class="progress-circle" id="overallProgress">65%</div>
+        <h3 style="margin-top:15px;">საერთო პროგრესი</h3>
+      </div>
+      <div class="glass stat-card">
+        <h2 style="color:#64b5ff;">4</h2>
+        <p>დასრულებული კურსი</p>
+      </div>
+      <div class="glass stat-card">
+        <h2 style="color:#64b5ff;">12</h2>
+        <p>წაკითხული თავი</p>
+      </div>
+      <div class="glass stat-card">
+        <h2 style="color:#64b5ff;">87</h2>
+        <p>საშუალო ქულა</p>
+      </div>
+    </div>
+
+    <h2 style="margin: 40px 0 25px;">ჩემი კურსები</h2>
+    <div id="myCoursesContainer" class="course-grid"></div>
+
+    <h2 style="margin: 60px 0 25px;">ბოლო აქტივობა</h2>
+    <div class="glass" style="padding:25px;">
+      <p>• წაიკითხე "ვეფხისტყაოსანი" – თავი 3 (დღეს)</p>
+      <p>• გააგზავნე დავალება "ილია ჭავჭავაძის პუბლიცისტიკა"</p>
+      <p>• დაასრულე 65% კურსი "ქართული ლიტერატურის ისტორია"</p>
+    </div>
   </div>
 
   <script src="js/app.js"></script>
   <script>
-    if (!Auth.isLoggedIn()) window.location.href = 'auth.html';
-    renderNavbar({ activePage:'dashboard' });
-    const user = Auth.getUser();
-
-    function render() {
-      const enr  = Courses.userEnrollments(user.id);
-      const subs = Submissions.byStudent(user.id);
-      const done = enr.filter(e=>e.progress===100).length;
-      const avgP = enr.length ? Math.round(enr.reduce((s,e)=>s+e.progress,0)/enr.length) : 0;
-      const avgG = subs.length ? Math.round(subs.reduce((s,x)=>s+x.grade,0)/subs.length) : 0;
-
-      document.getElementById('app').innerHTML = `
-        <!-- HERO -->
-        <div class="dash-hero fade-up">
-          <div class="dash-greeting">
-            <h2>გამარჯობა, <span class="grad-text">${user.username}</span> 👋</h2>
-            <p>გააგრძელე სადაც შეჩერდი — შენი სივრცე გელოდება.</p>
+    function renderMyCourses() {
+      const container = document.getElementById('myCoursesContainer');
+      container.innerHTML = `
+        <div class="glass course-card" style="padding:25px;">
+          <h3>ვეფხისტყაოსანი - სიღრმისეული ანალიზი</h3>
+          <p>პროგრესი: 65%</p>
+          <div style="height:8px; background:#333; border-radius:4px; margin:12px 0;">
+            <div style="width:65%; height:100%; background:#64b5ff; border-radius:4px;"></div>
           </div>
-          <div class="flex gap-1 flex-wrap">
-            <a href="index.html" class="btn btn-outline-cyan">+ კურსის დამატება</a>
-            ${user.role==='admin' ? '<a href="admin.html" class="btn btn-ghost">Admin Panel →</a>' : ''}
-          </div>
+          <button onclick="window.location.href='lesson.html'" class="btn-neon">გავაგრძელო სწავლა</button>
         </div>
 
-        <!-- STATS -->
-        <div class="stats-grid fade-up fade-up-1">
-          <div class="stat-card"><div class="stat-label">კურსები</div><div class="stat-value" style="color:var(--cyan)">${enr.length}</div><div class="stat-sub">რეგისტრირებული</div></div>
-          <div class="stat-card"><div class="stat-label">საშ. პროგრესი</div><div class="stat-value" style="color:#a58eff">${avgP}%</div><div class="stat-sub">ყველა კურსში</div></div>
-          <div class="stat-card"><div class="stat-label">დასრულებული</div><div class="stat-value" style="color:var(--green)">${done}</div><div class="stat-sub">კურსი ✓</div></div>
-          <div class="stat-card"><div class="stat-label">საშ. შეფასება</div><div class="stat-value" style="color:var(--amber)">${avgG||'—'}${avgG?'/100':''}</div><div class="stat-sub">${subs.length} დავალება</div></div>
-        </div>
-
-        <!-- BODY -->
-        <div class="body-content">
-          <div class="two-col">
-            <!-- LEFT: MY COURSES -->
-            <div>
-              <div class="section-head fade-up fade-up-2">
-                <h3>📚 ჩემი კურსები</h3>
-                <a href="index.html" class="btn btn-ghost btn-sm">ყველა კურსი</a>
-              </div>
-              ${enr.length === 0 ? `
-                <div class="empty-courses">
-                  <div class="icon">🚀</div>
-                  <h3>კურსი ჯერ არ გაქვს</h3>
-                  <p>ასობით სტუდენტი უკვე სწავლობს — შეუერთდი!</p>
-                  <a href="index.html" class="btn btn-primary">კატალოგის ნახვა →</a>
-                </div>
-              ` : enr.map((e,i) => `
-                <a href="lesson.html?course=${e.course_id}" class="course-row fade-up" style="animation-delay:${0.1+i*0.06}s">
-                  <div class="row-thumb">${e.course?.thumbnail||'📘'}</div>
-                  <div class="row-info">
-                    <h4>${e.course?.title||'კურსი'}</h4>
-                    <div class="row-meta">📚 ${e.course?.lessons||0} გაკ. · ⏱ ${e.course?.duration||''}</div>
-                    <div class="progress-wrap" style="max-width:200px">
-                      <div class="progress-fill ${e.progress===100?'green':''}" style="width:${e.progress}%"></div>
-                    </div>
-                  </div>
-                  <div class="row-right">
-                    <div class="row-pct">${e.progress}%</div>
-                    ${e.progress===100
-                      ?'<span class="badge badge-green">✓ Done</span>'
-                      :'<span class="badge badge-cyan">გაგრძელება</span>'
-                    }
-                  </div>
-                </a>
-              `).join('')}
-            </div>
-
-            <!-- RIGHT: SUBMISSIONS + ACTIVITY -->
-            <div>
-              ${subs.length > 0 ? `
-                <div class="section-head fade-up fade-up-2"><h3>📝 ჩემი შეფასებები</h3></div>
-                <div class="table-wrap mb-3 fade-up fade-up-3">
-                  <table>
-                    <thead><tr><th>დავალება</th><th>თარიღი</th><th>შეფასება</th></tr></thead>
-                    <tbody>
-                      ${subs.map(s=>{
-                        const cls=s.grade>=80?'hi':s.grade>=60?'mid':'lo';
-                        return `<tr><td>დავ. #${s.assignment_id}</td><td class="text-sm text-muted">${s.submitted_at}</td><td><span class="grade-val ${cls}">${s.grade}/100</span></td></tr>`;
-                      }).join('')}
-                    </tbody>
-                  </table>
-                </div>
-              ` : ''}
-              <div class="section-head fade-up fade-up-3"><h3>⚡ ბოლო აქტივობა</h3></div>
-              <div class="fade-up fade-up-4">
-                ${enr.length > 0 ? enr.slice(-4).reverse().map(e=>`
-                  <div class="activity-item">
-                    <div class="a-dot"></div>
-                    <div>
-                      <div class="a-text">დარეგ.: <strong>${e.course?.title}</strong></div>
-                      <div class="a-time">${e.enrolled_at}</div>
-                    </div>
-                  </div>
-                `).join('') : '<p class="text-sm text-muted">აქტივობა ჯერ არ არის</p>'}
-              </div>
-            </div>
+        <div class="glass course-card" style="padding:25px;">
+          <h3>ქართული ლიტერატურის ისტორია</h3>
+          <p>პროგრესი: 40%</p>
+          <div style="height:8px; background:#333; border-radius:4px; margin:12px 0;">
+            <div style="width:40%; height:100%; background:#64b5ff; border-radius:4px;"></div>
           </div>
+          <button class="btn-neon">გავაგრძელო სწავლა</button>
         </div>
       `;
     }
-    render();
+
+    window.onload = () => {
+      const user = JSON.parse(localStorage.getItem('currentUser')) || { username: "სტუდენტო" };
+      document.getElementById('username').textContent = user.username || "სტუდენტო";
+      renderMyCourses();
+    };
   </script>
 </body>
 </html>
