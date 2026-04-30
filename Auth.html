@@ -3,299 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS.ge — შესვლა</title>
+  <title>შესვლა - Deep Space Academy</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    body { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:1.5rem; }
-
-    .auth-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      width: 100%;
-      max-width: 900px;
-      min-height: 560px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 40px 100px rgba(0,0,0,0.6), var(--glow-violet);
-      animation: fadeUp 0.5s both;
+    .auth-container {
+      max-width: 420px;
+      margin: 100px auto;
+      padding: 50px 40px;
     }
-
-    /* LEFT PANEL */
-    .auth-left {
-      background: linear-gradient(160deg, rgba(0,212,255,0.08) 0%, rgba(124,92,252,0.12) 50%, rgba(255,107,157,0.06) 100%);
-      border-right: 1px solid var(--border);
-      padding: 3rem 2.5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-    .auth-left::before {
-      content: '◈';
-      position: absolute;
-      font-size: 18rem;
-      color: rgba(0,212,255,0.04);
-      right: -3rem;
-      bottom: -4rem;
-      line-height: 1;
-      pointer-events: none;
-    }
-    .auth-left-logo {
-      font-size: 1.4rem;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-    }
-    .auth-left-tagline {
-      font-size: 2rem;
-      font-weight: 800;
-      line-height: 1.2;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
-    }
-    .auth-left-sub { font-size: 14px; color: var(--muted); font-weight: 300; line-height: 1.65; }
-    .auth-features { display: flex; flex-direction: column; gap: 10px; margin-top: 1.5rem; }
-    .auth-feature {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: var(--text2);
-    }
-    .auth-feature-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 6px var(--cyan);
-      flex-shrink: 0;
-    }
-
-    /* RIGHT PANEL */
-    .auth-right {
-      background: rgba(11,13,20,0.9);
-      padding: 2.5rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .auth-tabs {
-      display: flex;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 2rem;
-    }
-    .auth-tab {
-      flex: 1;
-      padding: 9px;
-      text-align: center;
-      font-size: 13.5px;
-      font-weight: 600;
-      color: var(--muted);
+    .tab {
+      display: inline-block;
+      padding: 12px 30px;
       cursor: pointer;
-      border-radius: 7px;
-      transition: all 0.2s;
-      border: none;
-      background: none;
-      font-family: var(--font-body);
-      letter-spacing: 0.01em;
+      border-bottom: 3px solid transparent;
     }
-    .auth-tab.active {
-      background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,92,252,0.15));
-      color: var(--text);
-      border: 1px solid rgba(0,212,255,0.2);
-    }
-
-    .auth-form { display:none; flex:1; }
-    .auth-form.active { display:flex; flex-direction:column; animation: fadeIn 0.2s ease; }
-
-    .error-msg {
-      background: rgba(255,85,114,0.08);
-      border: 1px solid rgba(255,85,114,0.2);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      font-size: 13px;
-      color: var(--red);
-      margin-bottom: 1rem;
-      display: none;
-    }
-    .error-msg.show { display: block; animation: fadeIn 0.2s; }
-
-    .pwd-wrap { position:relative; }
-    .pwd-toggle {
-      position: absolute;
-      right: 12px; top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 14px;
-      padding: 4px;
-      transition: color 0.15s;
-    }
-    .pwd-toggle:hover { color: var(--text); }
-
-    .auth-divider { position:relative; text-align:center; margin: 1.25rem 0; }
-    .auth-divider::before { content:''; position:absolute; left:0;right:0;top:50%; height:1px; background:var(--border); }
-    .auth-divider span { background:rgba(11,13,20,0.9); padding:0 12px; position:relative; font-size:12px; color:var(--muted); }
-
-    .demo-box {
-      background: rgba(0,212,255,0.04);
-      border: 1px solid rgba(0,212,255,0.12);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
-      margin-top: auto;
-    }
-    .demo-box-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
-    .demo-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 5px 0;
-    }
-    .demo-row + .demo-row { border-top: 1px solid var(--border); }
-    .demo-label { font-size: 12px; color: var(--muted); }
-    .demo-cred { font-size: 11px; font-family: var(--font-mono); color: var(--cyan); cursor: pointer; }
-    .demo-cred:hover { text-decoration: underline; }
-
-    @media (max-width:680px) {
-      .auth-layout { grid-template-columns:1fr; }
-      .auth-left { display:none; }
+    .tab.active {
+      border-bottom: 3px solid #64b5ff;
+      color: #64b5ff;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="auth-layout">
-    <!-- LEFT -->
-    <div class="auth-left">
-      <div class="auth-left-logo">◈ LMS<span style="color:var(--cyan)">.ge</span></div>
-      <div>
-        <div class="auth-left-tagline grad-text">სწავლება<br>ახლა<br>იწყება.</div>
-        <div class="auth-left-sub">Deep Space Academy — სადაც კოდი ხდება ხელოვნება.</div>
-        <div class="auth-features">
-          <div class="auth-feature"><div class="auth-feature-dot"></div>6 კურსი ქართულ ენაზე</div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div>ვიდეო + ტექსტური მასალა</div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div>პრაქტიკული დავალებები</div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div>პროგრესის ტრეკინგი</div>
-        </div>
-      </div>
+  <nav>
+    <div style="max-width: 1400px; margin: 0 auto; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;">
+      <h2 onclick="window.location.href='index.html'" style="cursor:pointer; color:#64b5ff;">🌌 Deep Space Academy</h2>
+    </div>
+  </nav>
+
+  <div class="auth-container glass">
+    <h1 style="text-align:center; margin-bottom:40px;">მოგესალმებით</h1>
+
+    <!-- ტაბები -->
+    <div style="text-align:center; margin-bottom:30px;">
+      <span onclick="switchTab(0)" id="loginTab" class="tab active">შესვლა</span>
+      <span onclick="switchTab(1)" id="registerTab" class="tab">რეგისტრაცია</span>
     </div>
 
-    <!-- RIGHT -->
-    <div class="auth-right">
-      <div class="auth-tabs">
-        <button class="auth-tab active" onclick="switchTab('login')" id="tab-login">შესვლა</button>
-        <button class="auth-tab" onclick="switchTab('register')" id="tab-register">რეგისტრაცია</button>
-      </div>
+    <!-- შესვლის ფორმა -->
+    <div id="loginForm">
+      <input type="email" id="loginEmail" placeholder="ელფოსტა" class="glass" style="width:100%; padding:15px; margin:10px 0; border:none; border-radius:12px; font-size:1.1rem;">
+      <input type="password" id="loginPassword" placeholder="პაროლი" class="glass" style="width:100%; padding:15px; margin:10px 0; border:none; border-radius:12px; font-size:1.1rem;">
+      <button onclick="handleLogin()" class="btn-neon" style="width:100%; padding:16px; margin-top:20px; font-size:1.2rem;">შესვლა</button>
+      
+      <p style="text-align:center; margin-top:25px; color:#aaa;">
+        Demo ანგარიშები:<br>
+        student@lms.ge / student123<br>
+        admin@lms.ge / admin123
+      </p>
+    </div>
 
-      <!-- LOGIN -->
-      <div class="auth-form active" id="form-login">
-        <div class="error-msg" id="login-error"></div>
-        <div class="form-group">
-          <label class="form-label">ელ-ფოსტა</label>
-          <input type="email" class="form-input" id="login-email" placeholder="you@example.com" autocomplete="email">
-        </div>
-        <div class="form-group">
-          <label class="form-label">პაროლი</label>
-          <div class="pwd-wrap">
-            <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
-            <button class="pwd-toggle" onclick="togglePwd('login-password',this)" tabindex="-1">👁</button>
-          </div>
-        </div>
-        <button class="btn btn-primary w-full" style="margin:0.25rem 0 1rem" onclick="doLogin()">შესვლა სისტემაში →</button>
-        <div class="auth-divider"><span>სწრაფი წვდომა</span></div>
-        <div style="display:flex;gap:8px;margin-bottom:1rem">
-          <button class="btn btn-ghost w-full btn-sm" onclick="quickLogin('student@lms.ge','student123')">👨‍🎓 სტუდენტი</button>
-          <button class="btn btn-ghost w-full btn-sm" onclick="quickLogin('admin@lms.ge','admin123')">🛡 Admin</button>
-        </div>
-        <div class="demo-box">
-          <div class="demo-box-title">📋 demo credentials</div>
-          <div class="demo-row"><span class="demo-label">სტუდენტი</span><span class="demo-cred" onclick="fillLogin('student@lms.ge','student123')">student@lms.ge / student123</span></div>
-          <div class="demo-row"><span class="demo-label">Admin</span><span class="demo-cred" onclick="fillLogin('admin@lms.ge','admin123')">admin@lms.ge / admin123</span></div>
-          <div class="demo-row"><span class="demo-label">Teacher</span><span class="demo-cred" onclick="fillLogin('teacher@lms.ge','teacher123')">teacher@lms.ge / teacher123</span></div>
-        </div>
-      </div>
-
-      <!-- REGISTER -->
-      <div class="auth-form" id="form-register">
-        <div class="error-msg" id="register-error"></div>
-        <div class="form-group">
-          <label class="form-label">სახელი</label>
-          <input type="text" class="form-input" id="reg-username" placeholder="შეიყვანეთ სახელი">
-        </div>
-        <div class="form-group">
-          <label class="form-label">ელ-ფოსტა</label>
-          <input type="email" class="form-input" id="reg-email" placeholder="you@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">პაროლი</label>
-          <div class="pwd-wrap">
-            <input type="password" class="form-input" id="reg-pass" placeholder="მინ. 6 სიმბოლო">
-            <button class="pwd-toggle" onclick="togglePwd('reg-pass',this)" tabindex="-1">👁</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">პაროლის დადასტურება</label>
-          <input type="password" class="form-input" id="reg-pass2" placeholder="გაიმეორეთ">
-        </div>
-        <button class="btn btn-primary w-full" style="margin-top:0.25rem" onclick="doRegister()">ანგარიშის შექმნა →</button>
-      </div>
+    <!-- რეგისტრაციის ფორმა (დემო) -->
+    <div id="registerForm" style="display:none;">
+      <input type="text" id="regUsername" placeholder="სრული სახელი" class="glass" style="width:100%; padding:15px; margin:10px 0; border:none; border-radius:12px;">
+      <input type="email" id="regEmail" placeholder="ელფოსტა" class="glass" style="width:100%; padding:15px; margin:10px 0; border:none; border-radius:12px;">
+      <input type="password" id="regPassword" placeholder="პაროლი" class="glass" style="width:100%; padding:15px; margin:10px 0; border:none; border-radius:12px;">
+      <button onclick="alert('რეგისტრაცია წარმატებით დასრულდა! (დემო რეჟიმი)')" class="btn-neon" style="width:100%; padding:16px; margin-top:20px; font-size:1.2rem;">რეგისტრაცია</button>
     </div>
   </div>
 
   <script src="js/app.js"></script>
   <script>
-    if (Auth.isLoggedIn()) window.location.href = 'dashboard.html';
-    if (getParam('tab')==='register') switchTab('register');
-
     function switchTab(tab) {
-      document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
-      document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
-      document.getElementById('tab-'+tab).classList.add('active');
-      document.getElementById('form-'+tab).classList.add('active');
-      clearErr();
-    }
-    function clearErr() { document.querySelectorAll('.error-msg').forEach(e=>{e.classList.remove('show');e.textContent='';}); }
-    function showErr(id, msg) { const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
-    function togglePwd(id,btn) { const i=document.getElementById(id); i.type=i.type==='password'?'text':'password'; btn.textContent=i.type==='password'?'👁':'🙈'; }
-    function fillLogin(e,p) { switchTab('login'); document.getElementById('login-email').value=e; document.getElementById('login-password').value=p; }
-    function quickLogin(e,p) { fillLogin(e,p); setTimeout(doLogin,80); }
-
-    function doLogin() {
-      clearErr();
-      const email=document.getElementById('login-email').value.trim();
-      const pass=document.getElementById('login-password').value;
-      if(!email||!pass) return showErr('login-error','ყველა ველი სავალდებულოა');
-      const r=Auth.login(email,pass);
-      if(!r.ok) return showErr('login-error',r.error);
-      toast('კეთილი იყოს, '+r.user.username+'! 🚀','success');
-      setTimeout(()=>window.location.href=r.user.role==='admin'?'admin.html':'dashboard.html', 700);
+      document.getElementById('loginForm').style.display = tab === 0 ? 'block' : 'none';
+      document.getElementById('registerForm').style.display = tab === 1 ? 'block' : 'none';
+      
+      document.getElementById('loginTab').classList.toggle('active', tab === 0);
+      document.getElementById('registerTab').classList.toggle('active', tab === 1);
     }
 
-    function doRegister() {
-      clearErr();
-      const u=document.getElementById('reg-username').value.trim();
-      const e=document.getElementById('reg-email').value.trim();
-      const p=document.getElementById('reg-pass').value;
-      const p2=document.getElementById('reg-pass2').value;
-      if(!u||!e||!p) return showErr('register-error','ყველა ველი სავალდებულოა');
-      if(p.length<6) return showErr('register-error','პაროლი მინ. 6 სიმბოლო');
-      if(p!==p2) return showErr('register-error','პაროლები არ ემთხვევა');
-      const r=Auth.register(u,e,p);
-      if(!r.ok) return showErr('register-error',r.error);
-      toast('რეგისტრაცია წარმატებული! 🎉','success');
-      setTimeout(()=>window.location.href='dashboard.html', 700);
+    function handleLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      login(email, password);
     }
 
-    document.addEventListener('keydown',e=>{
-      if(e.key!=='Enter') return;
-      document.getElementById('form-login').classList.contains('active')?doLogin():doRegister();
-    });
+    // გვერდის ჩატვირთვისას
+    window.onload = () => {
+      switchTab(0);
+    };
   </script>
 </body>
 </html>
