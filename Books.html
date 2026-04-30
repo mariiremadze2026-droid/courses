@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS.ge — ქართული წიგნები</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { margin-top:64px; }
+
+    /* ── HERO ── */
+    .books-hero {
+      padding: 3.5rem 2rem 2.5rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .books-hero::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(124,92,252,0.12), transparent);
+      pointer-events:none;
+    }
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      background: rgba(124,92,252,0.1);
+      border:1px solid rgba(124,92,252,0.25);
+      border-radius:100px;
+      padding:5px 16px;
+      font-size:11px; font-weight:700; color:#a58eff;
+      letter-spacing:0.08em; text-transform:uppercase;
+      margin-bottom:1.25rem;
+    }
+    .books-hero h1 {
+      font-size:clamp(1.8rem,4vw,3rem);
+      font-weight:900;
+      letter-spacing:-0.03em;
+      margin-bottom:0.75rem;
+    }
+    .books-hero p { color:var(--muted); font-size:15px; font-weight:300; max-width:480px; margin:0 auto 2rem; }
+
+    /* ── SEARCH + FILTER BAR ── */
+    .lib-controls {
+      display:flex; align-items:center; gap:10px;
+      padding:1.25rem 2rem;
+      border-bottom:1px solid var(--border);
+      flex-wrap:wrap;
+      background:rgba(11,13,20,0.5);
+      backdrop-filter:blur(10px);
+      position:sticky; top:64px; z-index:10;
+    }
+    .lib-search {
+      display:flex; align-items:center; gap:8px;
+      background:rgba(17,21,32,0.8);
+      border:1px solid var(--border2);
+      border-radius:100px;
+      padding:8px 16px;
+      flex:1; min-width:200px; max-width:340px;
+      transition:border-color 0.2s;
+    }
+    .lib-search:focus-within { border-color:rgba(124,92,252,0.4); }
+    .lib-search input { background:none;border:none;outline:none;color:var(--text);font-family:var(--font-body);font-size:13px;width:100%; }
+    .lib-search input::placeholder { color:var(--subtle); }
+
+    .genre-pill {
+      padding:6px 16px;
+      border-radius:100px;
+      font-size:12px; font-weight:600;
+      cursor:pointer;
+      border:1px solid var(--border2);
+      background:transparent;
+      color:var(--muted);
+      transition:all 0.15s;
+      font-family:var(--font-body);
+      white-space:nowrap;
+    }
+    .genre-pill:hover { color:var(--text); border-color:var(--border3); background:rgba(255,255,255,0.04); }
+    .genre-pill.active { background:rgba(124,92,252,0.12); border-color:rgba(124,92,252,0.35); color:#a58eff; }
+
+    .view-toggle { display:flex; gap:4px; margin-left:auto; }
+    .view-btn {
+      width:34px; height:34px;
+      border:1px solid var(--border2);
+      border-radius:8px;
+      background:none;
+      color:var(--muted);
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      font-size:14px;
+      transition:all 0.15s;
+    }
+    .view-btn.active { background:rgba(124,92,252,0.12); border-color:rgba(124,92,252,0.3); color:#a58eff; }
+
+    /* ── BOOK GRID ── */
+    .book-grid-wrap { padding:1.75rem 2rem; }
+    .count-label { font-size:13px; color:var(--muted); margin-bottom:1.25rem; }
+
+    .book-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.25rem; }
+    .book-grid.list-view { grid-template-columns:1fr; }
+
+    /* GRID CARD */
+    .book-card {
+      background:rgba(17,21,32,0.65);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      overflow:hidden;
+      cursor:pointer;
+      transition:all 0.3s cubic-bezier(.4,0,.2,1);
+      backdrop-filter:blur(10px);
+    }
+    .book-card:hover {
+      border-color:rgba(124,92,252,0.3);
+      transform:translateY(-5px);
+      box-shadow:0 16px 40px rgba(0,0,0,0.4), 0 0 30px rgba(124,92,252,0.08);
+    }
+    .book-cover {
+      height:220px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:4rem;
+      position:relative;
+      overflow:hidden;
+    }
+    .book-cover-inner {
+      width:120px; height:180px;
+      border-radius:4px 10px 10px 4px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:3.5rem;
+      position:relative;
+      box-shadow:4px 4px 20px rgba(0,0,0,0.5), inset -3px 0 8px rgba(0,0,0,0.3);
+      transition:transform 0.3s;
+    }
+    .book-card:hover .book-cover-inner { transform:rotate(-3deg) scale(1.05); }
+    .book-cover-inner::after {
+      content:'';
+      position:absolute;
+      left:0; top:0; bottom:0;
+      width:12px;
+      background:rgba(0,0,0,0.25);
+      border-radius:4px 0 0 4px;
+    }
+    .book-pages-badge {
+      position:absolute;
+      bottom:10px; right:10px;
+      background:rgba(0,0,0,0.6);
+      border-radius:100px;
+      padding:3px 10px;
+      font-size:10px;
+      color:rgba(255,255,255,0.7);
+      backdrop-filter:blur(4px);
+    }
+    .book-body { padding:1rem; }
+    .book-genre {
+      font-size:10px; font-weight:700; color:#a58eff;
+      text-transform:uppercase; letter-spacing:0.1em; margin-bottom:5px;
+    }
+    .book-title { font-size:14px; font-weight:700; color:var(--text); line-height:1.3; margin-bottom:4px; }
+    .book-author { font-size:12px; color:var(--muted); margin-bottom:10px; }
+    .book-rating { display:flex; align-items:center; gap:5px; font-size:12px; }
+    .stars { color:var(--amber); }
+    .rating-num { color:var(--muted); }
+    .book-footer {
+      padding:0.75rem 1rem;
+      border-top:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .read-progress { font-size:11px; color:var(--muted); }
+
+    /* LIST CARD */
+    .book-grid.list-view .book-card { display:flex; flex-direction:row; align-items:center; }
+    .book-grid.list-view .book-cover { height:90px; width:80px; flex-shrink:0; }
+    .book-grid.list-view .book-cover-inner { width:55px; height:75px; font-size:1.8rem; }
+    .book-grid.list-view .book-body { flex:1; }
+    .book-grid.list-view .book-footer { border-top:none; border-left:1px solid var(--border); padding:0.75rem 1rem; min-width:140px; flex-direction:column; align-items:flex-start; gap:6px; }
+
+    /* ── READER MODAL ── */
+    .reader-overlay {
+      display:none;
+      position:fixed; inset:0;
+      background:rgba(0,0,0,0.9);
+      backdrop-filter:blur(12px);
+      z-index:300;
+      flex-direction:column;
+    }
+    .reader-overlay.open { display:flex; animation:fadeIn 0.2s; }
+
+    .reader-topbar {
+      height:56px;
+      background:rgba(11,13,20,0.95);
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:12px;
+      padding:0 1.5rem;
+      flex-shrink:0;
+    }
+    .reader-title { font-weight:700; font-size:15px; flex:1; }
+    .reader-controls { display:flex; align-items:center; gap:8px; }
+    .r-btn {
+      background:rgba(255,255,255,0.06);
+      border:1px solid var(--border2);
+      color:var(--text2);
+      border-radius:8px;
+      padding:6px 14px;
+      font-size:13px;
+      cursor:pointer;
+      font-family:var(--font-body);
+      transition:all 0.15s;
+    }
+    .r-btn:hover { background:rgba(255,255,255,0.1); color:var(--text); }
+    .font-size-ctrl { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+    .font-size-ctrl button {
+      width:28px; height:28px;
+      background:rgba(255,255,255,0.06);
+      border:1px solid var(--border2);
+      color:var(--text); font-size:14px;
+      border-radius:6px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    .reader-body {
+      display:grid;
+      grid-template-columns:220px 1fr;
+      flex:1;
+      overflow:hidden;
+    }
+
+    .reader-toc {
+      background:rgba(11,13,20,0.9);
+      border-right:1px solid var(--border);
+      overflow-y:auto;
+      padding:1rem;
+    }
+    .toc-title { font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem; padding:0 0.5rem; }
+    .toc-item {
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:13px; color:var(--muted);
+      cursor:pointer;
+      transition:all 0.15s;
+      margin-bottom:2px;
+    }
+    .toc-item:hover { background:rgba(255,255,255,0.04); color:var(--text2); }
+    .toc-item.active { background:rgba(124,92,252,0.12); color:#a58eff; }
+    .toc-num { font-size:10px; font-weight:700; color:var(--subtle); min-width:18px; }
+
+    .reader-content-wrap {
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      background: rgba(8,9,14,0.95);
+    }
+    .reader-page {
+      max-width:680px;
+      width:100%;
+      padding:3rem 2rem;
+    }
+    .reader-chapter-title {
+      font-size:1.5rem;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      margin-bottom:0.5rem;
+      color:var(--text);
+    }
+    .reader-chapter-num {
+      font-size:11px; font-weight:700;
+      color:#a58eff; text-transform:uppercase;
+      letter-spacing:0.1em; margin-bottom:1.5rem;
+    }
+    .reader-divider {
+      height:2px;
+      background:linear-gradient(90deg, var(--violet), var(--cyan), transparent);
+      margin-bottom:2rem; border-radius:100px;
+      width:80px;
+    }
+    .reader-text {
+      font-size:17px;
+      line-height:1.85;
+      color:var(--text2);
+      font-weight:300;
+    }
+    .reader-text p { margin-bottom:1.4rem; }
+    .reader-text p:first-child::first-letter {
+      float:left;
+      font-size:4rem;
+      font-weight:900;
+      line-height:0.8;
+      padding:0.1em 0.1em 0 0;
+      color:var(--cyan);
+      font-family:var(--font-head);
+    }
+    .reader-text .highlight { background:rgba(124,92,252,0.15); border-radius:3px; padding:1px 4px; }
+    .reader-text blockquote {
+      border-left:3px solid var(--violet);
+      padding:0.75rem 1rem;
+      margin:1.5rem 0;
+      background:rgba(124,92,252,0.06);
+      border-radius:0 8px 8px 0;
+      font-style:italic;
+      color:var(--text);
+    }
+
+    .reader-nav {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:1.5rem 2rem;
+      border-top:1px solid var(--border);
+      background:rgba(11,13,20,0.9);
+      flex-shrink:0;
+    }
+    .reader-progress-text { font-size:12px; color:var(--muted); text-align:center; }
+    .reader-progress-bar { width:200px; }
+
+    /* ── FEATURED STRIP ── */
+    .featured-strip {
+      padding:0 2rem 1.5rem;
+      border-bottom:1px solid var(--border);
+    }
+    .strip-title { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:1rem; }
+    .featured-scroll { display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; }
+    .featured-scroll::-webkit-scrollbar { height:3px; }
+    .featured-book {
+      flex-shrink:0; width:130px;
+      background:rgba(17,21,32,0.7);
+      border:1px solid var(--border);
+      border-radius:12px;
+      overflow:hidden;
+      cursor:pointer;
+      transition:all 0.2s;
+    }
+    .featured-book:hover { border-color:rgba(124,92,252,0.3); transform:translateY(-3px); }
+    .featured-cover { height:90px; display:flex; align-items:center; justify-content:center; font-size:2.5rem; background:var(--bg3); }
+    .featured-info { padding:8px; }
+    .featured-name { font-size:11px; font-weight:700; color:var(--text); line-height:1.3; }
+    .featured-author { font-size:10px; color:var(--muted); margin-top:2px; }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <nav class="navbar" id="navbar"></nav>
+
+    <!-- HERO -->
+    <div class="books-hero fade-up">
+      <div class="hero-eyebrow">📖 ბიბლიოთეკა</div>
+      <h1>ქართული <span class="grad-text">წიგნები</span></h1>
+      <p>ქართული ლიტერატურა, ტექნიკური სახელმძღვანელოები და სასწავლო მასალა — ონლაინ, უფასოდ.</p>
+    </div>
+
+    <!-- FEATURED -->
+    <div class="featured-strip fade-up fade-up-1" id="featured-strip"></div>
+
+    <!-- CONTROLS -->
+    <div class="lib-controls">
+      <div class="lib-search">
+        <span style="color:var(--muted);font-size:14px">⌕</span>
+        <input type="text" id="book-search" placeholder="წიგნის ძებნა..." oninput="renderBooks()">
+      </div>
+      <button class="genre-pill active" onclick="setGenre('all',this)">ყველა</button>
+      <button class="genre-pill" onclick="setGenre('lit',this)">მხატვრული</button>
+      <button class="genre-pill" onclick="setGenre('tech',this)">ტექნიკური</button>
+      <button class="genre-pill" onclick="setGenre('sci',this)">მეცნიერება</button>
+      <button class="genre-pill" onclick="setGenre('history',this)">ისტორია</button>
+      <button class="genre-pill" onclick="setGenre('philosophy',this)">ფილოსოფია</button>
+      <div class="view-toggle">
+        <button class="view-btn active" id="vbtn-grid" onclick="setView('grid')" title="Grid">⊞</button>
+        <button class="view-btn" id="vbtn-list" onclick="setView('list')" title="List">≡</button>
+      </div>
+    </div>
+
+    <!-- BOOK GRID -->
+    <div class="book-grid-wrap">
+      <div class="count-label" id="book-count"></div>
+      <div class="book-grid" id="book-grid"></div>
+    </div>
+  </div>
+
+  <!-- READER MODAL -->
+  <div class="reader-overlay" id="reader-modal">
+    <div class="reader-topbar">
+      <button class="r-btn" onclick="closeReader()">← უკან</button>
+      <div class="reader-title" id="reader-book-title">წიგნი</div>
+      <div class="reader-controls">
+        <div class="font-size-ctrl">
+          <button onclick="changeFontSize(-1)">A−</button>
+          <span id="font-size-label">17px</span>
+          <button onclick="changeFontSize(1)">A+</button>
+        </div>
+        <button class="r-btn" onclick="toggleTheme()">🌙 თემა</button>
+        <button class="r-btn" onclick="addBookmark()">🔖 სანიშნე</button>
+        <button class="r-btn" style="color:var(--red)" onclick="closeReader()">✕</button>
+      </div>
+    </div>
+
+    <div class="reader-body">
+      <div class="reader-toc" id="reader-toc"></div>
+      <div class="reader-content-wrap" id="reader-content-wrap">
+        <div class="reader-page" id="reader-page"></div>
+      </div>
+    </div>
+
+    <div class="reader-nav">
+      <button class="btn btn-ghost btn-sm" id="prev-chapter" onclick="changeChapter(-1)">← წინა თავი</button>
+      <div style="text-align:center">
+        <div class="reader-progress-bar">
+          <div class="progress-wrap"><div class="progress-fill" id="reader-progress-fill" style="width:0%"></div></div>
+        </div>
+        <div class="reader-progress-text" id="reader-progress-text">თავი 1 / 1</div>
+      </div>
+      <button class="btn btn-primary btn-sm" id="next-chapter" onclick="changeChapter(1)">შემდეგი თავი →</button>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    renderNavbar({ activePage:'books' });
+
+    /* ── DATA ── */
+    const BOOKS = [
+      {
+        id:1, title:'ვეფხისტყაოსანი', author:'შოთა რუსთაველი', genre:'lit',
+        emoji:'📜', color:'linear-gradient(135deg,#2d1b69,#5a2d82)',
+        year:'XII საუკუნე', pages:400, rating:5.0, reads:1240, featured:true,
+        desc:'ქართული ლიტერატურის გვირგვინი — სიყვარულისა და მეგობრობის ეპოსი.',
+        chapters:[
+          { title:'პირველი თავი — ტარიელი', content:`<p>ქართველ ლიტერატურათა უმარჯვენესი შედევრი გახლდათ „ვეფხისტყაოსანი", რომელიც შოთა რუსთაველმა დაწერა XII საუკუნეში. პოეტი გვიამბობს სამი გმირის — ტარიელის, ავთანდილისა და ფრიდონის შესახებ, რომლებიც ეძებენ სასახლედ გამოუვალ ნესტან-დარეჯანს.</p>
+<p>ამბავი ინდოეთ-არაბეთ-ხვარაზმის სამეფოებში ვითარდება. ტარიელი, ინდოეთის სარდალი, შეუყვარდება მეფის ქალიშვილ ნესტან-დარეჯანს. მათი სიყვარული ტრაგიკული გახდება, როცა ნესტანი ციხე-სიმაგრეში გამოიმწყვდევა.</p>
+<blockquote>„ვინ მარგლავს ვარდსა მოჰყრიან, ბულბული ვის ჩასჩიოდა,<br>სად ტყვე ყოფილა ლომი და ვეფხვი გამხდარ ციოდა?"</blockquote>
+<p>ეს ეპოსი არ არის მხოლოდ სიყვარულის ამბავი — ის ადამიანური ღირსების, მეგობრობის ერთგულებისა და სულიერი სიმაღლის ჰიმნია. რუსთაველი გვიჩვენებს, რომ ნამდვილი სიმამაცე მხოლოდ სხეულის სიძლიერეში კი არ მდგომარეობს, არამედ სულის სიწმინდეში.</p>`},
+          { title:'მეორე თავი — ავთანდილი', content:`<p>ავთანდილი, არაბეთის გმირი სარდალი, შეხვდება ტარიელს და მის ტრაგიკულ ამბავს გაიგებს. ავთანდილი ირს ფიცს, რომ ნესტანის პოვნაში დაეხმარება.</p>
+<p>ავთანდილის სახე განასახიერებს ერთგულ მეგობარს — ადამიანს, რომელიც მეგობრობის გამო ამ სოფელს ტოვებს და შორეულ გზებს ადგება. ეს არის ერთ-ერთი ყველაზე ლამაზი გამოხატულება მეგობრობის ღირებულებისა ქართულ ლიტერატურაში.</p>
+<blockquote>„მეგობრობა კარგი ოდეს, ამას ბრძენი ვინ მიხვდება?<br>ერთმანეთსა სიკვდილამდის, ჭირნი ერთად შეიხვდება."</blockquote>
+<p>ავთანდილი მიემგზავრება ქვეყნებს შუა, ეძებს სიმართლეს და ნესტანის კვალს. მისი მოგზაურობა სიბრძნის ძიების სიმბოლოა.</p>`},
+          { title:'მესამე თავი — ფრიდონი', content:`<p>ფრიდონი, მულღაზანზარელი ვაჟი, ხდება სამი გმირის მესამე წევრი. სამეული ერთობლივად ბრძოლობს ბოროტი ძალების წინააღმდეგ.</p>
+<p>სამი გმირის ძმობა ასახავს ქართულ ტრადიციულ ღირებულებებს: ერთობა, ერთგულება, ვაჟკაცობა. ისინი სხვადასხვა ქვეყნიდან არიან, სხვადასხვა ენაზე ლაპარაკობენ, მაგრამ სულით ძმები გახდნენ.</p>
+<p>ვეფხისტყაოსანი გვასწავლის, რომ ნამდვილი სიმდიდრე სიყვარულსა და ერთგულებაში მდგომარეობს, არა ოქრო-ვერცხლში. ეს გზავნილი დღესაც აქტუალურია.</p>`}
+        ]
+      },
+      {
+        id:2, title:'გამარჯვება ადამიანზე', author:'კონსტანტინე გამსახურდია', genre:'lit',
+        emoji:'📗', color:'linear-gradient(135deg,#1a3a1a,#2d5a2d)',
+        year:'1939', pages:312, rating:4.7, reads:890, featured:true,
+        desc:'ქართული პროზის შედევრი — ტრაგიკული სიყვარულის ეპოსი კოლხეთის ფონზე.',
+        chapters:[
+          { title:'თავი I — კოლხეთი', content:`<p>გამსახურდიას „გამარჯვება ადამიანზე" გვამცნობს კოლხეთის სამეფოს ბოლო დღეებს. ეს ეპოქა სავსეა ბრძოლებით, სიყვარულითა და ღალატით.</p>
+<p>მთავარი გმირი, ლაშა, ახალგაზრდა მეომარია, რომელიც ეძებს სამართლიანობას დაშლილ სამყაროში. ავტორი ოსტატურად ახატავს ეპოქის სულს — ძველი კოლხური ტრადიციებისა და ახალი ქრისტიანული ღირებულებების შეჯახებას.</p>
+<blockquote>„ადამიანი გამარჯვებულია, როდესაც სიყვარული სძლევს სიძულვილს."</blockquote>`},
+          { title:'თავი II — ბრძოლა', content:`<p>კოლხეთის სამეფო საფრთხეშია. გარე მტრები და შინაური ღალატი ასუსტებს სამეფოს. ლაშა ირჩევს ბრძოლის გზას.</p>
+<p>ბრძოლის სცენები ნათელს ჰფენს გამსახურდიას ისტორიული ლიტერატურის ოსტატობას. ყოველი დეტალი ზუსტია, ყოველი გმირი ფსიქოლოგიურად ნამდვილი.</p>`}
+        ]
+      },
+      {
+        id:3, title:'Python პროგრამირება', author:'ლაშა ბერიძე', genre:'tech',
+        emoji:'🐍', color:'linear-gradient(135deg,#0d3320,#1a5c38)',
+        year:'2023', pages:280, rating:4.8, reads:560, featured:true,
+        desc:'Python-ის სრული სახელმძღვანელო ქართულ ენაზე — დამწყებიდან პრო-მდე.',
+        chapters:[
+          { title:'თავი 1 — Python-ის საფუძვლები', content:`<p>Python — ერთ-ერთი ყველაზე პოპულარული პროგრამირების ენა სამყაროში. ის გამოიყენება მონაცემთა მეცნიერებაში, web-განვითარებაში, ხელოვნური ინტელექტისა და ავტომატიზაციის სფეროებში.</p>
+<p>Python-ის მთავარი უპირატესობა — სინტაქსის სიმარტივეა. ეს ენა კითხვადია, ბუნებრივ ენასთან ახლოს.</p>
+<blockquote>„Python is executable pseudocode." — Bruce Eckel</blockquote>
+<p>დავიწყოთ ყველაზე მარტივი პროგრამით:</p>
+<pre style="background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:13px;color:#c3e88d;overflow-x:auto;"><span style="color:#546e7a"># პირველი Python პროგრამა</span>
+<span style="color:#82aaff">print</span>(<span style="color:#c3e88d">"გამარჯობა, სამყარო!"</span>)
+
+<span style="color:#546e7a"># ცვლადები</span>
+სახელი = <span style="color:#c3e88d">"გიორგი"</span>
+ასაკი = <span style="color:#f78c6c">25</span>
+<span style="color:#82aaff">print</span>(f<span style="color:#c3e88d">"სახელი: {სახელი}, ასაკი: {ასაკი}"</span>)</pre>
+<p>Python-ში ცვლადებს ტიპის მითითება არ სჭირდება — ინტერპრეტატორი თავად განსაზღვრავს ტიპს.</p>`},
+          { title:'თავი 2 — მონაცემთა ტიპები', content:`<p>Python-ს აქვს სხვადასხვა ჩაშენებული მონაცემთა ტიპი: int, float, str, list, dict, tuple, set, bool.</p>
+<pre style="background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:13px;overflow-x:auto;"><span style="color:#546e7a"># სხვადასხვა ტიპი</span>
+<span style="color:#c792ea">რიცხვი</span> = <span style="color:#f78c6c">42</span>          <span style="color:#546e7a"># int</span>
+<span style="color:#c792ea">ათასი</span> = <span style="color:#f78c6c">3.14</span>        <span style="color:#546e7a"># float</span>
+<span style="color:#c792ea">ტექსტი</span> = <span style="color:#c3e88d">"გამარჯობა"</span> <span style="color:#546e7a"># str</span>
+<span style="color:#c792ea">სია</span> = [<span style="color:#f78c6c">1</span>, <span style="color:#f78c6c">2</span>, <span style="color:#f78c6c">3</span>, <span style="color:#c3e88d">"ოთხი"</span>] <span style="color:#546e7a"># list</span>
+<span style="color:#c792ea">ლექსიკონი</span> = {<span style="color:#c3e88d">"სახელი"</span>: <span style="color:#c3e88d">"ნინო"</span>, <span style="color:#c3e88d">"ასაკი"</span>: <span style="color:#f78c6c">20</span>} <span style="color:#546e7a"># dict</span></pre>
+<p>List — სიაა, რომელიც ნებისმიერ ტიპის ელემენტებს შეიცავს. Dict — გასაღებ-მნიშვნელობების სტრუქტურა.</p>`},
+          { title:'თავი 3 — ფუნქციები', content:`<p>ფუნქციები გვეხმარება კოდის ორგანიზებაში და გამეორების თავიდან არიდებაში.</p>
+<pre style="background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:13px;overflow-x:auto;"><span style="color:#c792ea">def</span> <span style="color:#82aaff">გამარჯობა</span>(სახელი, ასაკი=<span style="color:#f78c6c">0</span>):
+    <span style="color:#c3e88d">"""ფუნქცია ბეჭდავს გამარჯობას"""</span>
+    <span style="color:#c792ea">return</span> f<span style="color:#c3e88d">"გამარჯობა, {სახელი}! შენი ასაკია {ასაკი}."</span>
+
+შედეგი = <span style="color:#82aaff">გამარჯობა</span>(<span style="color:#c3e88d">"თამარ"</span>, <span style="color:#f78c6c">22</span>)
+<span style="color:#82aaff">print</span>(შედეგი)</pre>`}
+        ]
+      },
+      {
+        id:4, title:'ქართული ისტორია', author:'ივანე ჯავახიშვილი', genre:'history',
+        emoji:'🏛️', color:'linear-gradient(135deg,#2d1b00,#5c3a00)',
+        year:'1913', pages:520, rating:4.9, reads:720,
+        desc:'საქართველოს ისტორიის კლასიკური ნაშრომი — ყველა ქართველმა უნდა წაიკითხოს.',
+        chapters:[
+          { title:'I — ქართველთა წარმოშობა', content:`<p>ქართველი ხალხის ისტორია ათასობით წლის სიღრმეში იღებს სათავეს. ჩვენი წინაპრები, კოლხები და იბერები, კავკასიის ერთ-ერთ ყველაზე ადრეული ცივილიზაციის შემქმნელები იყვნენ.</p>
+<p>ჯავახიშვილი გვიჩვენებს, რომ ქართველური ტომები — კარტველები, სვანები, მეგრელ-ლაზები — ერთიანი ეთნიკური ჯგუფის განშტოებებია, რომელთა სათავე კავკასიაშია.</p>
+<blockquote>„ქართველი ხალხი კავკასიის ძველი, ორიგინალური მცხოვრებია, რომელმაც განავითარა თავისი ენა, კულტურა და სახელმწიფოებრიობა."</blockquote>`},
+          { title:'II — ქართლის სამეფო', content:`<p>ძვ. წ. IV საუკუნეში ჩამოყალიბდა ქართლის სამეფო (იბერია). პირველი მეფე, ფარნავაზი, გახდა ქართული სახელმწიფოს ფუძემდებელი.</p>
+<p>ქართლი სტრატეგიულ გეოგრაფიულ მდებარეობაში — სპარსეთ-რომის-სკვითეთის კვეთაზე — ამ გიგანტ სახელმწიფოებთან ზედამხედველობის ბრძოლაში გადარჩა და გამარჯვებული გამოვიდა.</p>`}
+        ]
+      },
+      {
+        id:5, title:'სიმართლის ძებნა', author:'მერაბ მამარდაშვილი', genre:'philosophy',
+        emoji:'🧠', color:'linear-gradient(135deg,#0d1a3a,#1a2d5c)',
+        year:'1984', pages:248, rating:4.6, reads:430,
+        desc:'ფილოსოფიური ესეები ცნობიერებასა და არსებობაზე ქართული მოაზროვნისგან.',
+        chapters:[
+          { title:'ცნობიერება და სიმართლე', content:`<p>მამარდაშვილი, XX საუკუნის დიდი ქართველი ფილოსოფოსი, სვამდა კითხვებს, რომლებიც კაცობრიობას მარადიულად ადარდებს: ვინ ვარ მე? რა არის სიმართლე? შეიძლება თუ არა ამ სამყაროში ნამდვილად გახდე?</p>
+<blockquote>„ადამიანი ის არსებაა, რომელმაც ყოველ ჯერზე ახლიდან უნდა შექმნას საკუთარი თავი."</blockquote>
+<p>ფილოსოფიური ფიქრი მამარდაშვილისთვის არ იყო აკადემიური სავარჯიშო — ეს იყო ცოცხალი სულიერი მოღვაწეობა, სიცოცხლის განუყოფელი ნაწილი.</p>`},
+          { title:'თავისუფლება', content:`<p>თავისუფლება მამარდაშვილის ფილოსოფიაში ცენტრალური თემაა. ის ამბობს: „თავისუფლება არ არის ბუნებრივი მდგომარეობა — ეს მიღწევაა, მუდმივი ძალისხმევის შედეგი."</p>
+<p>ეს იდეა ძალიან მნიშვნელოვანია. ჩვენ ხშირად ვფიქრობთ, რომ თავისუფლება უბრალოდ დამოუკიდებლობაა — გარედან შეზღუდვების არარსებობა. მაგრამ მამარდაშვილი გვიჩვენებს, რომ ნამდვილი თავისუფლება შინაგანი მიღწევაა.</p>`}
+        ]
+      },
+      {
+        id:6, title:'JavaScript: სრული გზამკვლევი', author:'გიორგი კვირიკაშვილი', genre:'tech',
+        emoji:'🟡', color:'linear-gradient(135deg,#2d2a00,#5c5200)',
+        year:'2024', pages:360, rating:4.9, reads:980, featured:true,
+        desc:'JavaScript-ის სრული სახელმძღვანელო — ES6+-დან async/await-მდე ქართულ ენაზე.',
+        chapters:[
+          { title:'ES6+ ახალი სინტაქსი', content:`<p>ES6 (ECMAScript 2015) — JavaScript-ის ყველაზე მნიშვნელოვანი განახლება, რომელმაც ენა მნიშვნელოვნად გარდაქმნა. ახალი სინტაქსი კოდს უფრო მოკლე, წაკითხვადი და ეფექტური გახდა.</p>
+<pre style="background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:13px;overflow-x:auto;"><span style="color:#546e7a">// const და let</span>
+<span style="color:#c792ea">const</span> სახელი = <span style="color:#c3e88d">"ნინო"</span>;
+<span style="color:#c792ea">let</span> ასაკი = <span style="color:#f78c6c">25</span>;
+
+<span style="color:#546e7a">// Arrow functions</span>
+<span style="color:#c792ea">const</span> <span style="color:#82aaff">გაყოფა</span> = (a, b) => a / b;
+
+<span style="color:#546e7a">// Template literals</span>
+<span style="color:#c792ea">const</span> msg = <span style="color:#c3e88d">\`გამარჯობა, \${სახელი}! ასაკი: \${ასაკი}\`</span>;
+
+<span style="color:#546e7a">// Destructuring</span>
+<span style="color:#c792ea">const</span> { name, age } = მომხმარებელი;
+<span style="color:#c792ea">const</span> [პირველი, მეორე] = სია;</pre>`},
+          { title:'Async/Await', content:`<p>Async/Await — Promise-ების გამარტივებული სინტაქსი, რომელიც ასინქრონულ კოდს სინქრონული სახის აძლევს.</p>
+<pre style="background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:var(--font-mono);font-size:13px;overflow-x:auto;"><span style="color:#c792ea">async function</span> <span style="color:#82aaff">მომხმარებლისჩატვირთვა</span>(id) {
+  <span style="color:#c792ea">try</span> {
+    <span style="color:#c792ea">const</span> პასუხი = <span style="color:#c792ea">await</span> <span style="color:#82aaff">fetch</span>(<span style="color:#c3e88d">\`/api/users/\${id}\`</span>);
+    <span style="color:#c792ea">const</span> მომხ = <span style="color:#c792ea">await</span> პასუხი.<span style="color:#82aaff">json</span>();
+    <span style="color:#82aaff">console.log</span>(მომხ.name);
+    <span style="color:#c792ea">return</span> მომხ;
+  } <span style="color:#c792ea">catch</span> (შეცდომა) {
+    <span style="color:#82aaff">console.error</span>(<span style="color:#c3e88d">'შეცდომა:'</span>, შეცდომა);
+  }
+}</pre>`}
+        ]
+      },
+      {
+        id:7, title:'ინტელექტი და მანქანა', author:'გიგა ლომიძე', genre:'sci',
+        emoji:'🤖', color:'linear-gradient(135deg,#001a2d,#003a5c)',
+        year:'2024', pages:200, rating:4.5, reads:340,
+        desc:'ხელოვნური ინტელექტი ქართულ კონტექსტში — ML, Neural Networks, GPT.',
+        chapters:[
+          { title:'ML-ის საფუძვლები', content:`<p>Machine Learning (მანქანური სწავლება) — ხელოვნური ინტელექტის ქვეგანყოფილება, სადაც სისტემა სწავლობს მონაცემებიდან ექსპლიციტური პროგრამირების გარეშე.</p>
+<p>ML-ის სამი ძირითადი ტიპი: <span class="highlight">Supervised Learning</span> (ზედამხედველობითი), <span class="highlight">Unsupervised Learning</span> (ზედამხედველობის გარეშე) და <span class="highlight">Reinforcement Learning</span> (განმამტკიცებელი).</p>
+<blockquote>„AI is not magic — it's mathematics applied to data at scale."</blockquote>
+<p>ნეირონული ქსელები ადამიანის ტვინის სტრუქტურის მიბაძვით ამუშავებს ინფორმაციას. ChatGPT, Claude, Gemini — ყველა ეს სისტემა ამ პრინციპზეა დამყარებული.</p>`}
+        ]
+      },
+      {
+        id:8, title:'რუბა და ვარდი', author:'ნინო ჰარატიშვილი', genre:'lit',
+        emoji:'🌹', color:'linear-gradient(135deg,#2d001a,#5c003a)',
+        year:'2020', pages:180, rating:4.4, reads:510,
+        desc:'თანამედროვე ქართული პროზა — სიყვარული, ომი და გადარჩენა.',
+        chapters:[
+          { title:'სიყვარული ომის ფონზე', content:`<p>ჰარატიშვილი, ერთ-ერთი ყველაზე წარმატებული თანამედროვე ქართული ავტორი, გვამბობს სიყვარულის ამბავს, რომელიც ომის ფონზე ვითარდება.</p>
+<p>გმირები — ორი ახალგაზრდა, ომით დარბეული ქვეყნის შვილები — ცდილობენ ჩვეულებრივი სიცოცხლე გადარჩინონ გამანადგურებელ გარემოებებში.</p>
+<blockquote>„სიყვარული ომს ვერ აჩერებს, მაგრამ ის ომის მიუხედავად გრძელდება."</blockquote>`}
+        ]
+      },
+    ];
+
+    let activeGenre = 'all';
+    let currentView = 'grid';
+    let currentBook = null;
+    let currentChapter = 0;
+    let fontSize = 17;
+    let lightTheme = false;
+
+    /* Bookmarks from localStorage */
+    function getBookmarks() { try { return JSON.parse(localStorage.getItem('lms_bookmarks') || '[]'); } catch { return []; } }
+    function saveBookmarks(bm) { localStorage.setItem('lms_bookmarks', JSON.stringify(bm)); }
+    function getReadProgress() { try { return JSON.parse(localStorage.getItem('lms_read_progress') || '{}'); } catch { return {}; } }
+    function saveReadProgress(key, ch) {
+      const p = getReadProgress(); p[key] = ch; localStorage.setItem('lms_read_progress', JSON.stringify(p));
+    }
+
+    /* Featured strip */
+    function renderFeatured() {
+      const strip = document.getElementById('featured-strip');
+      const featured = BOOKS.filter(b => b.featured);
+      strip.innerHTML = `
+        <div class="strip-title">🔥 განსაკუთრებულები</div>
+        <div class="featured-scroll">
+          ${featured.map(b => `
+            <div class="featured-book" onclick="openReader(${b.id})">
+              <div class="featured-cover" style="background:${b.color}">${b.emoji}</div>
+              <div class="featured-info">
+                <div class="featured-name">${b.title}</div>
+                <div class="featured-author">${b.author}</div>
+              </div>
+            </div>`).join('')}
+        </div>`;
+    }
+
+    function setGenre(g, btn) {
+      activeGenre = g;
+      document.querySelectorAll('.genre-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderBooks();
+    }
+
+    function setView(v) {
+      currentView = v;
+      document.getElementById('vbtn-grid').classList.toggle('active', v === 'grid');
+      document.getElementById('vbtn-list').classList.toggle('active', v === 'list');
+      renderBooks();
+    }
+
+    function renderBooks() {
+      const q = document.getElementById('book-search').value.toLowerCase();
+      let books = BOOKS;
+      if (activeGenre !== 'all') books = books.filter(b => b.genre === activeGenre);
+      if (q) books = books.filter(b => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q));
+
+      const progress = getReadProgress();
+      document.getElementById('book-count').textContent = `${books.length} წიგნი ნაპოვნია`;
+
+      const grid = document.getElementById('book-grid');
+      grid.className = `book-grid${currentView === 'list' ? ' list-view' : ''}`;
+
+      if (!books.length) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📭</div><h3>წიგნი ვერ მოიძებნა</h3><p>სცადეთ სხვა საძიებო სიტყვა</p></div>`;
+        return;
+      }
+
+      const genreLabels = { lit:'მხატვრული', tech:'ტექნიკური', sci:'მეცნიერება', history:'ისტორია', philosophy:'ფილოსოფია' };
+      const stars = r => '★'.repeat(Math.round(r)) + '☆'.repeat(5 - Math.round(r));
+
+      grid.innerHTML = books.map((b, i) => {
+        const prog = progress[b.id];
+        const readPct = prog != null ? Math.round(((prog + 1) / b.chapters.length) * 100) : 0;
+        return `
+        <div class="book-card fade-up" style="animation-delay:${i * 0.05}s" onclick="openReader(${b.id})">
+          <div class="book-cover" style="background:${b.color}">
+            <div class="book-cover-inner" style="background:${b.color}">
+              ${b.emoji}
+            </div>
+            <div class="book-pages-badge">📄 ${b.pages} გვ.</div>
+          </div>
+          <div class="book-body">
+            <div class="book-genre">${genreLabels[b.genre] || b.genre}</div>
+            <div class="book-title">${b.title}</div>
+            <div class="book-author">${b.author} · ${b.year}</div>
+            <div class="book-rating">
+              <span class="stars">${stars(b.rating)}</span>
+              <span class="rating-num">${b.rating} (${b.reads})</span>
+            </div>
+          </div>
+          <div class="book-footer">
+            <div>
+              ${readPct > 0 ? `
+                <div class="read-progress" style="margin-bottom:4px">წაკითხულია ${readPct}%</div>
+                <div class="progress-wrap" style="width:100px">
+                  <div class="progress-fill" style="width:${readPct}%"></div>
+                </div>` : '<span class="badge badge-violet">კითხვა →</span>'}
+            </div>
+            <span class="badge badge-muted">📖 ${b.chapters.length} თავი</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    /* ── READER ── */
+    function openReader(id) {
+      currentBook = BOOKS.find(b => b.id === id);
+      if (!currentBook) return;
+      const saved = getReadProgress()[id] || 0;
+      currentChapter = saved;
+      renderReader();
+      document.getElementById('reader-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeReader() {
+      document.getElementById('reader-modal').classList.remove('open');
+      document.body.style.overflow = '';
+      renderBooks(); // update progress bars
+    }
+
+    function renderReader() {
+      if (!currentBook) return;
+      const ch = currentBook.chapters[currentChapter];
+      const total = currentBook.chapters.length;
+      const pct = Math.round(((currentChapter + 1) / total) * 100);
+
+      // Save progress
+      saveReadProgress(currentBook.id, currentChapter);
+
+      // Title
+      document.getElementById('reader-book-title').textContent = `${currentBook.emoji} ${currentBook.title}`;
+
+      // TOC
+      document.getElementById('reader-toc').innerHTML = `
+        <div class="toc-title">📋 სარჩევი</div>
+        ${currentBook.chapters.map((c, i) => `
+          <div class="toc-item ${i === currentChapter ? 'active' : ''}" onclick="goChapter(${i})">
+            <span class="toc-num">${i + 1}</span>
+            ${c.title}
+          </div>`).join('')}
+        <div style="margin-top:1.5rem;padding:0 0.5rem">
+          <div class="toc-title" style="margin-bottom:6px">პროგრესი</div>
+          <div class="progress-wrap">
+            <div class="progress-fill" style="width:${pct}%"></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">${pct}% წაკითხული</div>
+        </div>`;
+
+      // Content
+      const wrap = document.getElementById('reader-content-wrap');
+      document.getElementById('reader-page').innerHTML = `
+        <div class="reader-chapter-num">თავი ${currentChapter + 1} / ${total}</div>
+        <div class="reader-chapter-title">${ch.title}</div>
+        <div class="reader-divider"></div>
+        <div class="reader-text" style="font-size:${fontSize}px">${ch.content}</div>`;
+      wrap.scrollTop = 0;
+
+      // Nav buttons
+      document.getElementById('prev-chapter').disabled = currentChapter === 0;
+      document.getElementById('next-chapter').disabled = currentChapter === total - 1;
+      document.getElementById('reader-progress-fill').style.width = pct + '%';
+      document.getElementById('reader-progress-text').textContent = `თავი ${currentChapter + 1} / ${total}`;
+
+      if (currentChapter === total - 1) {
+        document.getElementById('next-chapter').textContent = '✓ დასრულებულია';
+        document.getElementById('next-chapter').disabled = true;
+      } else {
+        document.getElementById('next-chapter').textContent = 'შემდეგი თავი →';
+        document.getElementById('next-chapter').disabled = false;
+      }
+    }
+
+    function goChapter(i) {
+      currentChapter = i;
+      renderReader();
+    }
+
+    function changeChapter(dir) {
+      const next = currentChapter + dir;
+      if (next < 0 || next >= currentBook.chapters.length) return;
+      currentChapter = next;
+      renderReader();
+    }
+
+    function changeFontSize(delta) {
+      fontSize = Math.min(24, Math.max(13, fontSize + delta));
+      document.getElementById('font-size-label').textContent = fontSize + 'px';
+      document.querySelector('.reader-text').style.fontSize = fontSize + 'px';
+    }
+
+    function toggleTheme() {
+      lightTheme = !lightTheme;
+      const wrap = document.getElementById('reader-content-wrap');
+      wrap.style.background = lightTheme ? '#f5f0e8' : 'rgba(8,9,14,0.95)';
+      const text = document.querySelector('.reader-text');
+      if (text) text.style.color = lightTheme ? '#2d2a22' : '';
+      const title = document.querySelector('.reader-chapter-title');
+      if (title) title.style.color = lightTheme ? '#1a1814' : '';
+    }
+
+    function addBookmark() {
+      if (!currentBook) return;
+      const bm = getBookmarks();
+      const key = `${currentBook.id}-${currentChapter}`;
+      if (!bm.includes(key)) {
+        bm.push(key);
+        saveBookmarks(bm);
+        toast(`🔖 სანიშნე დაემატა: "${currentBook.chapters[currentChapter].title}"`, 'success');
+      } else {
+        toast('ეს სანიშნე უკვე გაქვს', 'info');
+      }
+    }
+
+    renderFeatured();
+    renderBooks();
+  </script>
+</body>
+</html>
