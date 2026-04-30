@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS.ge — დავალებები</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { margin-top: 64px; }
+
+    /* ── PAGE HEADER ── */
+    .hw-hero {
+      padding: 3rem 2rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(0,229,160,0.05) 0%, rgba(0,212,255,0.04) 100%);
+      position: relative; overflow: hidden;
+    }
+    .hw-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 100% 50%, rgba(0,229,160,0.08), transparent);
+      pointer-events: none;
+    }
+    .hw-hero-inner { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+    .hw-hero h1 { font-size: 2rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 6px; }
+    .hw-hero p  { color: var(--muted); font-size: 14px; font-weight: 300; max-width: 400px; }
+
+    /* ── TABS ── */
+    .hw-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      background: rgba(11,13,20,0.6);
+      backdrop-filter: blur(10px);
+      position: sticky; top: 64px; z-index: 10;
+    }
+    .hw-tab {
+      padding: 13px 20px;
+      font-size: 13.5px; font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border: none; background: none;
+      font-family: var(--font-body);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hw-tab:hover { color: var(--text2); }
+    .hw-tab.active { color: var(--green); border-bottom-color: var(--green); }
+    .hw-tab .tab-count {
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 100px;
+      padding: 1px 8px;
+      font-size: 11px; font-weight: 700;
+      min-width: 20px; text-align: center;
+    }
+    .hw-tab.active .tab-count { background: var(--green-dim); color: var(--green); }
+
+    /* ── MAIN LAYOUT ── */
+    .hw-body {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 0;
+      min-height: calc(100vh - 200px);
+    }
+    .hw-left { padding: 1.75rem 2rem; border-right: 1px solid var(--border); }
+    .hw-right { padding: 1.75rem; background: rgba(11,13,20,0.4); }
+
+    /* ── SECTION PANEL ── */
+    .hw-panel { display: none; }
+    .hw-panel.active { display: block; animation: fadeIn 0.2s ease; }
+
+    /* ── ASSIGNMENT CARD ── */
+    .asgn-card {
+      background: rgba(17,21,32,0.65);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+    }
+    .asgn-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      border-radius: 0 2px 2px 0;
+    }
+    .asgn-card.pending::before  { background: var(--amber); }
+    .asgn-card.submitted::before{ background: var(--cyan); }
+    .asgn-card.graded::before   { background: var(--green); }
+    .asgn-card.overdue::before  { background: var(--red); }
+    .asgn-card:hover { border-color: var(--border2); transform: translateX(3px); box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .asgn-card.selected { border-color: rgba(0,229,160,0.35); background: rgba(0,229,160,0.04); }
+
+    .asgn-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .asgn-subject { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+    .asgn-title { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.3; }
+    .asgn-desc  { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; font-weight: 300; }
+    .asgn-meta  { display: flex; align-items: center; gap: 14px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+    .asgn-meta-item { display: flex; align-items: center; gap: 5px; }
+
+    /* ── DETAIL PANEL (right side) ── */
+    .detail-empty {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem;
+    }
+    .detail-empty-icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.4; }
+    .detail-empty p { font-size: 14px; font-weight: 300; }
+
+    .detail-card {
+      background: rgba(17,21,32,0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      animation: fadeIn 0.2s ease;
+    }
+    .detail-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(0,229,160,0.06), transparent);
+    }
+    .detail-subject { font-size: 10px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 5px; }
+    .detail-title   { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .detail-body    { padding: 1.25rem; }
+    .detail-section { margin-bottom: 1.25rem; }
+    .detail-label   { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .detail-text    { font-size: 13.5px; color: var(--text2); line-height: 1.65; font-weight: 300; }
+    .requirements-list { list-style: none; }
+    .requirements-list li {
+      padding: 6px 0;
+      font-size: 13px; color: var(--text2);
+      display: flex; align-items: flex-start; gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .requirements-list li:last-child { border-bottom: none; }
+    .req-icon { color: var(--cyan); flex-shrink: 0; margin-top: 1px; }
+
+    /* Submission form */
+    .submit-section { padding: 1.25rem; border-top: 1px solid var(--border); }
+    .submit-tabs { display: flex; gap: 4px; margin-bottom: 1rem; }
+    .stab {
+      padding: 6px 14px; font-size: 12px; font-weight: 600;
+      border-radius: 8px; border: 1px solid var(--border2);
+      color: var(--muted); cursor: pointer; background: none;
+      font-family: var(--font-body); transition: all 0.15s;
+    }
+    .stab.active { background: var(--green-dim); color: var(--green); border-color: rgba(0,229,160,0.25); }
+    .stab-panel { display: none; }
+    .stab-panel.active { display: block; animation: fadeIn 0.15s; }
+
+    .code-area {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      color: #c3e88d;
+      min-height: 140px;
+    }
+
+    .grade-display {
+      background: rgba(0,229,160,0.08);
+      border: 1px solid rgba(0,229,160,0.2);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .grade-big { font-size: 3rem; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+    .grade-big.hi  { color: var(--green); }
+    .grade-big.mid { color: var(--amber); }
+    .grade-big.lo  { color: var(--red); }
+    .grade-label { font-size: 12px; color: var(--muted); }
+    .grade-feedback { margin-top: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 10px 12px; font-size: 13px; color: var(--text2); text-align: left; font-weight: 300; }
+
+    /* ── STATS ROW ── */
+    .hw-stats {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 1rem;
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── NEW ASSIGNMENT MODAL ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .tag {
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: transparent; color: var(--muted);
+      transition: all 0.15s; font-family: var(--font-body);
+    }
+    .tag.selected { background: var(--green-dim); color: var(--green); border-color: rgba(0,229,160,0.3); }
+
+    /* Calendar mini */
+    .mini-cal {
+      background: rgba(17,21,32,0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 13px; font-weight: 700; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+    .cal-day-label { font-size: 10px; font-weight: 700; color: var(--muted); text-align: center; padding: 4px 0; }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; border-radius: 6px; color: var(--muted); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cal-day:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .cal-day.today { background: var(--green-dim); color: var(--green); font-weight: 700; }
+    .cal-day.has-due { background: rgba(255,181,71,0.1); color: var(--amber); font-weight: 600; }
+    .cal-day.empty { pointer-events: none; }
+
+    @media(max-width:900px) {
+      .hw-body { grid-template-columns: 1fr; }
+      .hw-right { border-top: 1px solid var(--border); }
+      .hw-stats { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <nav class="navbar" id="navbar"></nav>
+
+    <!-- HERO -->
+    <div class="hw-hero fade-up">
+      <div class="hw-hero-inner">
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">📋 სამუშაო სივრცე</div>
+          <h1>დავალებები</h1>
+          <p>ყველა დავალება ერთ ადგილას — გაგზავნე, თვალი ადევნე, შეფასება ნახე.</p>
+        </div>
+        <div class="flex gap-1 flex-wrap">
+          <button class="btn btn-outline-cyan" onclick="openModal('new-asgn-modal')" id="create-btn" style="display:none">+ ახალი დავალება</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="hw-stats fade-up fade-up-1" id="hw-stats"></div>
+
+    <!-- TABS -->
+    <div class="hw-tabs">
+      <button class="hw-tab active" onclick="showPanel('pending',this)" id="tab-pending">
+        ⏳ მოლოდინში <span class="tab-count" id="cnt-pending">0</span>
+      </button>
+      <button class="hw-tab" onclick="showPanel('submitted',this)" id="tab-submitted">
+        ✅ გაგზავნილი <span class="tab-count" id="cnt-submitted">0</span>
+      </button>
+      <button class="hw-tab" onclick="showPanel('graded',this)" id="tab-graded">
+        🏆 შეფასებული <span class="tab-count" id="cnt-graded">0</span>
+      </button>
+      <button class="hw-tab" onclick="showPanel('all',this)" id="tab-all">
+        📋 ყველა <span class="tab-count" id="cnt-all">0</span>
+      </button>
+    </div>
+
+    <!-- BODY -->
+    <div class="hw-body">
+      <div class="hw-left">
+        <div class="hw-panel active" id="panel-pending" data-filter="pending"></div>
+        <div class="hw-panel" id="panel-submitted" data-filter="submitted"></div>
+        <div class="hw-panel" id="panel-graded" data-filter="graded"></div>
+        <div class="hw-panel" id="panel-all" data-filter="all"></div>
+      </div>
+
+      <div class="hw-right">
+        <div class="mini-cal" id="mini-cal"></div>
+        <div id="detail-area">
+          <div class="detail-empty">
+            <div class="detail-empty-icon">📋</div>
+            <p>დავალებაზე დაჭერით ნახე დეტალები და გაგზავნე პასუხი</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW ASSIGNMENT MODAL (admin) -->
+  <div class="modal-overlay" id="new-asgn-modal">
+    <div class="modal" style="max-width:600px">
+      <div class="modal-header">
+        <div class="modal-title">➕ ახალი დავალება</div>
+        <button class="modal-close" onclick="closeModal('new-asgn-modal')">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">სათაური</label>
+        <input type="text" class="form-input" id="na-title" placeholder="დავალების სათაური">
+      </div>
+      <div class="form-group">
+        <label class="form-label">კურსი</label>
+        <select class="form-input" id="na-course"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">აღწერა</label>
+        <textarea class="form-input" id="na-desc" rows="3" placeholder="რა უნდა გააკეთოს სტუდენტმა?"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">ვადა</label>
+          <input type="date" class="form-input" id="na-due">
+        </div>
+        <div class="form-group">
+          <label class="form-label">ქულები</label>
+          <input type="number" class="form-input" id="na-points" placeholder="100" value="100">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">ტიპი</label>
+        <div class="tag-row" id="na-type-tags">
+          <button class="tag selected" data-type="code" onclick="selectTag(this)">💻 კოდი</button>
+          <button class="tag" data-type="essay" onclick="selectTag(this)">📝 ესე</button>
+          <button class="tag" data-type="quiz" onclick="selectTag(this)">❓ ტესტი</button>
+          <button class="tag" data-type="project" onclick="selectTag(this)">🚀 პროექტი</button>
+        </div>
+      </div>
+      <div class="flex gap-1" style="justify-content:flex-end;margin-top:1.5rem">
+        <button class="btn btn-ghost" onclick="closeModal('new-asgn-modal')">გაუქმება</button>
+        <button class="btn btn-primary" onclick="createAssignment()">შექმნა →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    const user = Auth.getUser();
+    if (!user) window.location.href = 'auth.html';
+    renderNavbar({ activePage:'assignments' });
+
+    // Admin can create assignments
+    if (user?.role === 'admin') document.getElementById('create-btn').style.display = 'inline-flex';
+
+    /* ── ASSIGNMENTS DATA ── */
+    function getAssignments() {
+      let asgns = DB.get('assignments', null);
+      if (!asgns) {
+        asgns = [
+          { id:1, title:'პირველი JavaScript პროგრამა', course_id:1, course_name:'JavaScript კურსი', subject:'JavaScript', desc:'დაწერე ფუნქცია, რომელიც იღებს სიას და აბრუნებს ყველაზე დიდ ელემენტს. გამოიყენე reduce() ან for-of loop.', requirements:['ფუნქცია უნდა მუშაობდეს ნებისმიერი სიის სიგრძეზე','edge case: ცარიელი სია','დაამატე JSDoc კომენტარები','unit test-ები bonus-ია'], type:'code', due:'2025-05-15', points:100, status:'pending', created:'2025-04-20' },
+          { id:2, title:'React Component-ის შექმნა', course_id:2, course_name:'React კურსი', subject:'React', desc:'შექმენი სრულფასოვანი TodoList კომპონენტი React-ის გამოყენებით. კომპონენტი უნდა შეიცავდეს add, delete, toggle-done ფუნქციონალს.', requirements:['useState გამოიყენე state-ისთვის','LocalStorage-ში შეინახე todos','Responsive design','Animated add/remove'], type:'code', due:'2025-05-20', points:120, status:'submitted', submitted_at:'2025-05-10', content:'const TodoList = () => { ... }', created:'2025-04-25' },
+          { id:3, title:'REST API-ის შექმნა', course_id:3, course_name:'Node.js კურსი', subject:'Node.js', desc:'Express-ით შექმენი CRUD API მომხმარებლებისთვის. GET /users, POST /users, PUT /users/:id, DELETE /users/:id.', requirements:['Express Router გამოიყენე','Input validation','Error handling middleware','Postman collection ჩაურთე'], type:'project', due:'2025-05-25', points:150, status:'graded', grade:88, feedback:'ძალიან კარგი მუშაობა! Validation ნაწილი შეიძლება გაუმჯობესდეს — Joi ან zod გამოიყენე. Error handling კარგად არის გაკეთებული. Bonus: rate limiting ჩაუმატე.', submitted_at:'2025-05-18', created:'2025-04-28' },
+          { id:4, title:'Pandas-ით მონაცემების ანალიზი', course_id:4, course_name:'Python კურსი', subject:'Python/Data', desc:'მოცემული CSV ფაილის ანალიზი Pandas-ის გამოყენებით. იპოვე top-10 პროდუქტი, გამოთვალე საშუალო ფასი კატეგორიების მიხედვით.', requirements:['Pandas DataFrames','Matplotlib ვიზუალიზაცია','groupby() გამოყენება','Jupyter Notebook ფორმატში'], type:'code', due:'2025-04-30', points:80, status:'overdue', created:'2025-04-01' },
+          { id:5, title:'SQL JOIN-ების პრაქტიკა', course_id:5, course_name:'SQL კურსი', subject:'SQL', desc:'მოცემულ სქემაზე დაწერე 10 query: INNER JOIN, LEFT JOIN, subquery, aggregation, window functions.', requirements:['მინ. 2 JOIN ტიპი','GROUP BY გამოყენება','HAVING clause','ოპტიმიზებული indexing'], type:'code', due:'2025-05-28', points:90, status:'pending', created:'2025-05-01' },
+          { id:6, title:'UX Case Study', course_id:6, course_name:'Design კურსი', subject:'UX/UI', desc:'შეარჩიე რომელიმე ქართული აპი/საიტი და გააკეთე სრული UX audit: heuristic evaluation, user flow, wireframe redesign.', requirements:['Heuristic evaluation (10 Nielsen)','User journey map','Lo-fi wireframes Figma-ში','5+ გვ. ანგარიში'], type:'project', due:'2025-06-05', points:200, status:'pending', created:'2025-05-05' },
+        ];
+        DB.set('assignments', asgns);
+      }
+      return asgns;
+    }
+
+    function getMySubmissions() { return DB.get('hw_submissions', []); }
+    function saveSubmission(asgnId, content, type) {
+      const subs = getMySubmissions();
+      const existing = subs.find(s => s.asgn_id === asgnId && s.user_id === user.id);
+      if (existing) { existing.content = content; existing.type = type; existing.submitted_at = new Date().toISOString().slice(0,10); }
+      else subs.push({ id: Date.now(), asgn_id: asgnId, user_id: user.id, content, type, submitted_at: new Date().toISOString().slice(0,10) });
+      DB.set('hw_submissions', subs);
+    }
+    function getMySubmission(asgnId) { return getMySubmissions().find(s => s.asgn_id === asgnId && s.user_id === user.id); }
+
+    /* Merge assignment status with user submissions */
+    function getEnrichedAssignments() {
+      const asgns = getAssignments();
+      const subs = getMySubmissions();
+      return asgns.map(a => {
+        const mySub = subs.find(s => s.asgn_id === a.id && s.user_id === user.id);
+        if (mySub) return { ...a, status: a.grade != null ? 'graded' : 'submitted', mySub };
+        if (a.status === 'graded' || a.status === 'submitted') return { ...a, status: 'pending' }; // reset for other users
+        return a;
+      });
+    }
+
+    let selectedAsgn = null;
+    let activePanel = 'pending';
+
+    /* ── RENDER STATS ── */
+    function renderStats(asgns) {
+      const pending   = asgns.filter(a => a.status === 'pending').length;
+      const submitted = asgns.filter(a => a.status === 'submitted').length;
+      const graded    = asgns.filter(a => a.status === 'graded').length;
+      const overdue   = asgns.filter(a => a.status === 'overdue').length;
+      const avgGrade  = asgns.filter(a => a.grade).reduce((s,a,_,arr) => s + a.grade/arr.length, 0);
+
+      document.getElementById('hw-stats').innerHTML = `
+        <div class="stat-card"><div class="stat-label">მოლოდინში</div><div class="stat-value" style="color:var(--amber)">${pending}</div><div class="stat-sub">დავალება</div></div>
+        <div class="stat-card"><div class="stat-label">გაგზავნილი</div><div class="stat-value" style="color:var(--cyan)">${submitted}</div><div class="stat-sub">შეფასების მოლოდინში</div></div>
+        <div class="stat-card"><div class="stat-label">შეფასებული</div><div class="stat-value" style="color:var(--green)">${graded}</div><div class="stat-sub">✓ დასრულებული</div></div>
+        <div class="stat-card"><div class="stat-label">საშ. ქულა</div><div class="stat-value" style="color:#a58eff">${graded ? Math.round(avgGrade) : '—'}${graded ? '/100' : ''}</div><div class="stat-sub">შეფასებებიდან</div></div>`;
+    }
+
+    /* ── RENDER PANELS ── */
+    function renderPanels() {
+      const asgns = getEnrichedAssignments();
+      renderStats(asgns);
+
+      const filters = { pending:['pending'], submitted:['submitted'], graded:['graded'], all:['pending','submitted','graded','overdue'] };
+      let counts = { pending:0, submitted:0, graded:0, all:asgns.length };
+      asgns.forEach(a => { if (a.status in counts) counts[a.status]++; });
+
+      Object.entries(counts).forEach(([k,v]) => {
+        const el = document.getElementById('cnt-'+k);
+        if (el) el.textContent = v;
+      });
+
+      Object.entries(filters).forEach(([filter, statuses]) => {
+        const panel = document.getElementById('panel-'+filter);
+        const list = asgns.filter(a => statuses.includes(a.status));
+        panel.innerHTML = list.length ? list.map(a => renderAsgnCard(a)).join('') : `
+          <div style="text-align:center;padding:3rem;color:var(--muted)">
+            <div style="font-size:2rem;margin-bottom:10px;opacity:0.4">${filter==='pending'?'🎉':'📭'}</div>
+            <div style="font-size:14px">${filter==='pending'?'ყველა დავალება შესრულებულია!':'ჯერ არ არის'}</div>
+          </div>`;
+      });
+    }
+
+    const statusMap = { pending:'amber', submitted:'cyan', graded:'green', overdue:'red' };
+    const statusLabel = { pending:'⏳ მოლოდინში', submitted:'✅ გაგზავნილი', graded:'🏆 შეფასებული', overdue:'⚠️ ვადა გასული' };
+    const typeIcon = { code:'💻', essay:'📝', quiz:'❓', project:'🚀' };
+
+    function renderAsgnCard(a) {
+      const urgency = a.status==='pending' || a.status==='overdue' ? getDaysLeft(a.due) : null;
+      const isSelected = selectedAsgn?.id === a.id;
+      return `
+      <div class="asgn-card ${a.status}${isSelected?' selected':''} fade-up" onclick="selectAsgn(${a.id})">
+        <div class="asgn-top">
+          <div>
+            <div class="asgn-subject">${typeIcon[a.type]||'📋'} ${a.subject} · ${a.course_name}</div>
+            <div class="asgn-title">${a.title}</div>
+          </div>
+          <span class="badge badge-${statusMap[a.status]||'muted'}">${statusLabel[a.status]}</span>
+        </div>
+        <div class="asgn-desc">${a.desc?.slice(0,100)}${a.desc?.length>100?'...':''}</div>
+        <div class="asgn-meta">
+          <span class="asgn-meta-item">📅 ${a.due}</span>
+          <span class="asgn-meta-item">🎯 ${a.points} ქულა</span>
+          ${urgency!==null?`<span class="asgn-meta-item" style="color:${urgency<=2?'var(--red)':urgency<=5?'var(--amber)':'var(--muted)'}">${urgency>=0?`⏰ ${urgency} დღე`:'⚠️ ვადა გასულია'}</span>`:''}
+          ${a.grade?`<span class="asgn-meta-item" style="font-weight:700;color:var(--green)">✓ ${a.grade}/${a.points}</span>`:''}
+        </div>
+      </div>`;
+    }
+
+    function getDaysLeft(due) {
+      if (!due) return null;
+      const diff = Math.floor((new Date(due) - new Date()) / 86400000);
+      return diff;
+    }
+
+    /* ── SELECT + DETAIL ── */
+    function selectAsgn(id) {
+      const asgns = getEnrichedAssignments();
+      selectedAsgn = asgns.find(a => a.id === id);
+      renderDetail();
+      renderPanels(); // re-render to show selection
+    }
+
+    let submitType = 'text'; // text | code | file
+
+    function renderDetail() {
+      if (!selectedAsgn) return;
+      const a = selectedAsgn;
+      const mySub = getMySubmission(a.id);
+      const area = document.getElementById('detail-area');
+
+      const gradeClass = a.grade >= 80 ? 'hi' : a.grade >= 60 ? 'mid' : 'lo';
+
+      area.innerHTML = `
+        <div class="detail-card">
+          <div class="detail-header">
+            <div class="detail-subject">${typeIcon[a.type]} ${a.subject}</div>
+            <div class="detail-title">${a.title}</div>
+            <div class="flex gap-1 flex-wrap" style="margin-top:8px">
+              <span class="badge badge-${statusMap[a.status]||'muted'}">${statusLabel[a.status]}</span>
+              <span class="badge badge-muted">🎯 ${a.points} ქულა</span>
+              <span class="badge badge-muted">📅 ${a.due}</span>
+            </div>
+          </div>
+          <div class="detail-body">
+            <div class="detail-section">
+              <div class="detail-label">დავალება</div>
+              <div class="detail-text">${a.desc}</div>
+            </div>
+            ${a.requirements?.length ? `
+              <div class="detail-section">
+                <div class="detail-label">მოთხოვნები</div>
+                <ul class="requirements-list">
+                  ${a.requirements.map(r=>`<li><span class="req-icon">◈</span>${r}</li>`).join('')}
+                </ul>
+              </div>` : ''}
+            ${a.grade ? `
+              <div class="detail-section">
+                <div class="detail-label">შეფასება</div>
+                <div class="grade-display">
+                  <div class="grade-big ${gradeClass}">${a.grade}<span style="font-size:1.2rem;color:var(--muted)">/${a.points}</span></div>
+                  <div class="grade-label">${a.grade>=90?'შესანიშნავი 🌟':a.grade>=75?'კარგი 👍':a.grade>=60?'საშუალო':'გაიმეორე 📖'}</div>
+                  ${a.feedback?`<div class="grade-feedback">💬 ${a.feedback}</div>`:''}
+                </div>
+              </div>` : ''}
+          </div>
+          ${a.status !== 'graded' ? `
+            <div class="submit-section">
+              <div class="detail-label" style="margin-bottom:10px">${mySub?'✏️ პასუხის რედაქტირება':'📤 პასუხის გაგზავნა'}</div>
+              <div class="submit-tabs">
+                <button class="stab ${submitType==='text'?'active':''}" onclick="setSubmitType('text',this)">📝 ტექსტი</button>
+                <button class="stab ${submitType==='code'?'active':''}" onclick="setSubmitType('code',this)">💻 კოდი</button>
+                <button class="stab ${submitType==='link'?'active':''}" onclick="setSubmitType('link',this)">🔗 ლინკი</button>
+              </div>
+              <div id="stab-text" class="stab-panel ${submitType==='text'?'active':''}">
+                <textarea class="form-input w-full" id="sub-text" rows="5" placeholder="შეიყვანე შენი პასუხი...">${mySub?.type==='text'?mySub.content:''}</textarea>
+              </div>
+              <div id="stab-code" class="stab-panel ${submitType==='code'?'active':''}">
+                <textarea class="form-input w-full code-area" id="sub-code" rows="7" placeholder="// შეიყვანე კოდი...">${mySub?.type==='code'?mySub.content:''}</textarea>
+              </div>
+              <div id="stab-link" class="stab-panel ${submitType==='link'?'active':''}">
+                <input type="url" class="form-input w-full" id="sub-link" placeholder="https://github.com/..." value="${mySub?.type==='link'?mySub.content:''}">
+                <div style="font-size:12px;color:var(--muted);margin-top:6px">GitHub, CodePen, Replit, Google Drive ლინკი</div>
+              </div>
+              <div class="flex gap-1" style="margin-top:12px;justify-content:flex-end">
+                ${mySub?'<span class="text-sm text-muted" style="margin-right:auto">გაგზავნილია: '+mySub.submitted_at+'</span>':''}
+                <button class="btn btn-ghost btn-sm" onclick="clearSubmit()">გასუფთავება</button>
+                <button class="btn btn-primary btn-sm" onclick="submitAnswer(${a.id})">
+                  ${mySub?'განახლება':'გაგზავნა'} →
+                </button>
+              </div>
+            </div>` : ''}
+        </div>`;
+    }
+
+    function setSubmitType(type, btn) {
+      submitType = type;
+      document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.stab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('stab-' + type)?.classList.add('active');
+    }
+
+    function clearSubmit() {
+      ['sub-text','sub-code','sub-link'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+    }
+
+    function submitAnswer(id) {
+      const content = submitType === 'text' ? document.getElementById('sub-text')?.value
+        : submitType === 'code' ? document.getElementById('sub-code')?.value
+        : document.getElementById('sub-link')?.value;
+      if (!content?.trim()) return toast('შეიყვანე პასუხი', 'error');
+      saveSubmission(id, content.trim(), submitType);
+      // Mark assignment as submitted
+      const asgns = getAssignments();
+      const a = asgns.find(x => x.id === id);
+      if (a && a.status === 'pending') { a.status = 'submitted'; DB.set('assignments', asgns); }
+      toast('დავალება წარმატებით გაიგზავნა! ✓', 'success');
+      selectedAsgn = { ...selectedAsgn, status:'submitted', mySub: getMySubmission(id) };
+      renderDetail();
+      renderPanels();
+    }
+
+    /* ── PANEL SWITCH ── */
+    function showPanel(name, btn) {
+      document.querySelectorAll('.hw-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.hw-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('panel-'+name).classList.add('active');
+      btn.classList.add('active');
+      activePanel = name;
+    }
+
+    /* ── MINI CALENDAR ── */
+    function renderMiniCalendar() {
+      const now = new Date();
+      const y = now.getFullYear(), m = now.getMonth();
+      const asgns = getAssignments();
+      const dueDays = new Set(asgns.map(a => {
+        if (!a.due) return null;
+        const d = new Date(a.due);
+        return d.getFullYear()===y && d.getMonth()===m ? d.getDate() : null;
+      }).filter(Boolean));
+
+      const firstDay = new Date(y, m, 1).getDay();
+      const daysInMonth = new Date(y, m+1, 0).getDate();
+      const months = ['იანვარი','თებერვალი','მარტი','აპრილი','მაისი','ივნისი','ივლისი','აგვისტო','სექტემბერი','ოქტომბერი','ნოემბერი','დეკემბერი'];
+      const days = ['კვ','ორ','სა','ოთ','ხუ','პა','შა'];
+
+      let cells = '';
+      for (let i=0; i<firstDay; i++) cells += `<div class="cal-day empty"></div>`;
+      for (let d=1; d<=daysInMonth; d++) {
+        const isToday = d === now.getDate();
+        const hasDue = dueDays.has(d);
+        cells += `<div class="cal-day${isToday?' today':hasDue?' has-due':''}">${d}</div>`;
+      }
+
+      document.getElementById('mini-cal').innerHTML = `
+        <div class="cal-header">
+          <span>${months[m]}</span>
+          <span style="color:var(--muted);font-size:12px">${y}</span>
+        </div>
+        <div class="cal-grid">
+          ${days.map(d=>`<div class="cal-day-label">${d}</div>`).join('')}
+          ${cells}
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--muted);display:flex;gap:10px;align-items:center">
+          <span style="display:flex;gap:4px;align-items:center"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span>დღეს</span>
+          <span style="display:flex;gap:4px;align-items:center"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span>ვადა</span>
+        </div>`;
+    }
+
+    /* ── NEW ASSIGNMENT (admin) ── */
+    function selectTag(btn) {
+      document.querySelectorAll('#na-type-tags .tag').forEach(t => t.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function createAssignment() {
+      const title   = document.getElementById('na-title').value.trim();
+      const desc    = document.getElementById('na-desc').value.trim();
+      const courseId= parseInt(document.getElementById('na-course').value);
+      const due     = document.getElementById('na-due').value;
+      const points  = parseInt(document.getElementById('na-points').value) || 100;
+      const type    = document.querySelector('#na-type-tags .tag.selected')?.dataset.type || 'code';
+      const course  = Courses.byId(courseId);
+
+      if (!title || !desc || !due) return toast('სათაური, აღწერა, ვადა სავალდებულოა', 'error');
+
+      const asgns = getAssignments();
+      asgns.push({ id: Date.now(), title, desc, course_id: courseId, course_name: course?.title||'', subject: course?.category||'', type, due, points, status:'pending', requirements:[], created: new Date().toISOString().slice(0,10) });
+      DB.set('assignments', asgns);
+      closeModal('new-asgn-modal');
+      toast('დავალება შეიქმნა! ✓', 'success');
+      renderPanels();
+
+      document.getElementById('na-title').value = '';
+      document.getElementById('na-desc').value  = '';
+      document.getElementById('na-due').value   = '';
+    }
+
+    /* ── INIT ── */
+    function init() {
+      // Populate course select for admin
+      if (user?.role === 'admin') {
+        const sel = document.getElementById('na-course');
+        Courses.all().forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.id; opt.textContent = c.title;
+          sel.appendChild(opt);
+        });
+        // Set default due date
+        const tomorrow = new Date(Date.now() + 7*86400000);
+        document.getElementById('na-due').value = tomorrow.toISOString().slice(0,10);
+      }
+      renderPanels();
+      renderMiniCalendar();
+    }
+
+    init();
+  </script>
+</body>
+</html>
